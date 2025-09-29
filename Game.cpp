@@ -110,31 +110,6 @@ void Game::RefreshBoard()
 	
 }
 
-/*void Game::ShowBoard() const
-{
-    // 유니코드 출력을 위해 cout 대신 wcout을 사용
-    // ⚠️ MinGW 환경에서 유니코드 출력 설정 (a.cpp의 main 함수에 설정 필요)
-    
-	for (int i = Rank::Ranksize - 1; i >= 0; i--)
-	{
-		cout << " " << i + 1 << " ";
-		for (int j = 0; j < File::Filesize; j++)
-		{
-			if (board[i][j].currentPiece == PieceType::typeNone) cout << " + ";
-			// unicodeForPiece는 string을 반환하므로 cout으로 출력합니다.
-            // 인코딩 문제는 컴파일 및 실행 시의 인코딩 플래그로 해결합니다.
-			else cout << " " << unicodeForPiece(board[i][j].pieceColor, board[i][j].currentPiece) << " "; 
-		}
-		cout << endl;
-	}
-	cout << "   ";
-	for (int i = 0; i < File::Filesize; i++)
-	{
-		cout << " " << static_cast<char>(i+ 'a') << " ";
-	}
-	cout << endl;
-}
-*/
 void Game::ShowBoard() const
 {
     // 1. 상단 경계선 출력

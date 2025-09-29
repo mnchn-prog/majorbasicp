@@ -43,3 +43,11 @@ enum Player
 	black,
 	playerNone
 };
+
+enum GameMode
+{
+	classical,
+	rapid,
+	blitz,
+	bullet
+};

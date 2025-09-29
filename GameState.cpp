@@ -11,23 +11,3 @@ Piece* GameState::getPieceInBoard(File file, Rank rank) const
     return nullptr;
 }
 
-string unicodeForPiece(Player color, char p){
-
-    if(color == Player::black)
-    {
-        switch(p){
-
-            case 'K': return "♚"; case 'Q': return "♛"; case 'R': return "♜";
-            case 'B': return "♝"; case 'N': return "♞"; case 'P': return "♟";
-            default: return ".";
-        }
-    }
-    else
-    {
-        switch(p){
-            case 'K': return "♔"; case 'Q': return "♕"; case 'R': return "♖";
-            case 'B': return "♗"; case 'N': return "♘"; case 'P': return "♙";
-            default: return ".";
-        }
-    }
-}

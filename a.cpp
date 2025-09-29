@@ -27,6 +27,7 @@ using namespace std; // std::string, std::cout 등을 위해 필요
 
 Cell board[Rank::Ranksize][File::Filesize];
 
+GameMode ChoiceGameMode();
 int main()
 {
     // ⬇️ Windows 환경에서 콘솔 출력 인코딩을 UTF-8로 설정
@@ -75,17 +76,42 @@ int main()
 
     // 3. 게임 시작
 	Game game(board, &w, &b, Player::white);
-	while (true)
-	{
-		system("cls");
-		game.RefreshBoard();
-		game.ShowBoard();
-		system("pause");
-		string startPos, endPos;
-		cout << "움직일 기물 위치 입력: ";
-		cin >> startPos;
-		cout << "도착할 위치 입력: ";
-		cin >> endPos;
-		game.MovePiece(startPos, endPos);
-	}
+
+    cout << "1. 게임 시작 2. 게임 모드 3. 게임 설명 4. 프로그램 종료 \n번호를 입력하세요(1~4): ";
+    int num; cin >> num;
+    GameMode gameMode = GameMode::classical;
+    switch(num)
+    {
+	    case 1:
+            while (true)
+	        {
+		        system("cls");
+		        game.RefreshBoard();
+		        game.ShowBoard();
+		        system("pause");
+		        string startPos, endPos;
+		        cout << "움직일 기물 위치 입력: ";
+		        cin >> startPos;
+		        cout << "도착할 위치 입력: ";
+		        cin >> endPos;
+		        game.MovePiece(startPos, endPos);
+	        }
+            break;
+        case 2:
+            gameMode = ChoiceGameMode();
+            break;
+    }
+}
+
+GameMode ChoiceGameMode()
+{
+    cout << "1. 클래시컬 2. 래피드 3. 블리츠 4. 불렛 \n 번호를 입력하세요: ";
+    int n; cin >> n;
+    switch(n)
+    {
+        case 1: return GameMode::classical;
+        case 2: return GameMode::rapid;
+        case 3: return GameMode::blitz;
+        case 4: return GameMode::bullet;
+    }
 }
