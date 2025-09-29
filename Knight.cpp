@@ -1,6 +1,5 @@
 #include "Knight.h"
 
-
 bool Knight::isMoveable(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize]) const
 {
 	int curX = static_cast<int>(pos.x);

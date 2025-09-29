@@ -110,7 +110,7 @@ void Game::RefreshBoard()
 	
 }
 
-void Game::ShowBoard() const
+/*void Game::ShowBoard() const
 {
     // 유니코드 출력을 위해 cout 대신 wcout을 사용
     // ⚠️ MinGW 환경에서 유니코드 출력 설정 (a.cpp의 main 함수에 설정 필요)
@@ -134,3 +134,51 @@ void Game::ShowBoard() const
 	}
 	cout << endl;
 }
+*/
+void Game::ShowBoard() const
+{
+    // 1. 상단 경계선 출력
+    cout << "   ";
+    for (int j = 0; j < File::Filesize; j++)
+    {
+        cout << "____";
+    }
+    cout << "_" << endl;
+    
+    for (int i = Rank::Ranksize - 1; i >= 0; i--)
+    {
+        // 2. 랭크 번호 (행 번호) 출력
+        cout << " " << i + 1 << " "; 
+        
+        // 3. 기물과 세로 경계선 출력
+        for (int j = 0; j < File::Filesize; j++)
+        {
+            cout << "|"; // 칸의 왼쪽 경계
+            if (board[i][j].currentPiece == PieceType::typeNone) {
+                cout << "   "; // 빈 칸은 공백 두 칸
+            } else {
+                // 기물 출력
+                cout << " " << unicodeForPiece(board[i][j].pieceColor, board[i][j].currentPiece) << " "; 
+            }
+        }
+        cout << "|"; // 맨 오른쪽 경계
+        cout << endl;
+
+        // 4. 칸 아래쪽 경계선 출력
+        cout << "   ";
+        for (int j = 0; j < File::Filesize; j++)
+        {
+            cout << "|___"; // 칸의 아래쪽 경계
+        }
+        cout << "|" << endl;
+    }
+    
+    // 5. 파일 문자 (열 번호) 출력
+    cout << "    ";
+    for (int i = 0; i < File::Filesize; i++)
+    {
+        cout << " " << static_cast<char>(i + 'a') << "  "; // 파일 문자 사이 간격 조정
+    }
+    cout << endl;
+}
+
