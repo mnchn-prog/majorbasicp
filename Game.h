@@ -1,6 +1,7 @@
 #pragma once
-#include "GameState.h"
 #include "Cell.h"
+#include "GameState.h"
+
 class Game
 {
 private:
@@ -14,5 +15,5 @@ public:
     void MovePiece(string startPos, string endPos);
 	void ShowBoard() const;
 	void RefreshBoard();
-
+	inline Player GetTrun() const {return turn;}
 };

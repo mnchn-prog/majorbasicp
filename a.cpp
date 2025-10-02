@@ -23,11 +23,12 @@
 #include "King.h"
 #include "Game.h"
 
-using namespace std; // std::string, std::cout 등을 위해 필요
-
+using namespace std;
+//g++ -o chess_game a.cpp Game.cpp GameState.cpp Piece.cpp Knight.cpp Bishop.cpp Pawn.cpp Rook.cpp Queen.cpp King.cpp -finput-charset=UTF-8 -fexec-charset=UTF-8 -std=c++11
 Cell board[Rank::Ranksize][File::Filesize];
 
 GameMode ChoiceGameMode();
+void StartGame(Game game);
 int main()
 {
     // ⬇️ Windows 환경에서 콘솔 출력 인코딩을 UTF-8로 설정
@@ -83,19 +84,7 @@ int main()
     switch(num)
     {
 	    case 1:
-            while (true)
-	        {
-		        system("cls");
-		        game.RefreshBoard();
-		        game.ShowBoard();
-		        system("pause");
-		        string startPos, endPos;
-		        cout << "움직일 기물 위치 입력: ";
-		        cin >> startPos;
-		        cout << "도착할 위치 입력: ";
-		        cin >> endPos;
-		        game.MovePiece(startPos, endPos);
-	        }
+            StartGame(game);
             break;
         case 2:
             gameMode = ChoiceGameMode();
@@ -105,7 +94,7 @@ int main()
 
 GameMode ChoiceGameMode()
 {
-    cout << "1. 클래시컬 2. 래피드 3. 블리츠 4. 불렛 \n 번호를 입력하세요: ";
+    cout << "1. 클래식(30분) 2. 래피드(10분) 3. 블리츠(3분) \n번호를 입력하세요: ";
     int n; cin >> n;
     switch(n)
     {
@@ -113,5 +102,23 @@ GameMode ChoiceGameMode()
         case 2: return GameMode::rapid;
         case 3: return GameMode::blitz;
         case 4: return GameMode::bullet;
+        return GameMode::classical;
     }
+}
+
+void StartGame(Game game)
+{
+    while (true)
+	{
+	system("cls");
+	game.RefreshBoard();
+	game.ShowBoard();
+    system("pause");
+	string startPos, endPos;
+	cout << (game.GetTrun() == 0 ? "white" : "black") << " | 움직일 기물 위치 입력: ";
+	cin >> startPos;
+	cout << (game.GetTrun() == 0 ? "white" : "black") << " | 도착할 위치 입력: ";
+	cin >> endPos;
+	game.MovePiece(startPos, endPos);
+	}
 }

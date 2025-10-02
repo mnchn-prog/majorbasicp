@@ -113,6 +113,7 @@ void Game::RefreshBoard()
 void Game::ShowBoard() const
 {
     // 1. 상단 경계선 출력
+    cout << "black | 03:00" << endl;
     cout << "   ";
     for (int j = 0; j < File::Filesize; j++)
     {
@@ -155,5 +156,6 @@ void Game::ShowBoard() const
         cout << " " << static_cast<char>(i + 'a') << "  "; // 파일 문자 사이 간격 조정
     }
     cout << endl;
+    cout << "white | 03:00" << endl;
 }
 

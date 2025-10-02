@@ -18,4 +18,5 @@ public:
 
 	Piece* getPieceInBoard(File file, Rank rank) const;
 	vector<Piece*> GetPieces() const { return pieces; }
+	~GameState();
 };
