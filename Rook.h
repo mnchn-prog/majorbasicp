@@ -7,8 +7,9 @@ private:
 	const int dx[8] = { -2, -2, -1, -1, 1, 1, 2, 2 };
 	const int dy[8] = { -1, 1, -2, 2, -2, 2, -1, 1 };
 	bool isMoveable(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize]) const override;
-	vector<pair<int, int>> CheckAttackCell(Cell(&board)[Rank::Ranksize][File::Filesize]) const override;
 
 public:
 	Rook(File x, Rank y, PieceType type, Player color) : Piece(x, y, type, color) {}
+	vector<pair<int, int>> CheckAttackCell(Cell(&board)[Rank::Ranksize][File::Filesize]) const override;
+
 };

@@ -5,7 +5,6 @@ string Game::unicodeForPiece(Player color, PieceType p) const{
     if(color == Player::black)
     {
         switch(p){
-
             case PieceType::typeKing: return "♚"; case PieceType::typeQueen: return "♛"; case PieceType::typeRook: return "♜";
             case PieceType::typeBishop: return "♝"; case PieceType::typeKnight: return "♞"; case PieceType::typePawn: return "♟";
             default: return ".";
@@ -89,25 +88,44 @@ void Game::RefreshBoard()
 	{
 		for (int j = 0; j < File::Filesize; j++)
 		{
-			File file = static_cast<File>(j);
-			Rank rank = static_cast<Rank>(i);
-			Piece* whitePiece = whiteState->getPieceInBoard(file, rank);
-			Piece* blackPiece = blackState->getPieceInBoard(file, rank);
+			Piece* whitePiece = whiteState->getPieceInBoard(static_cast<File>(j), static_cast<Rank>(i));
+			Piece* blackPiece = blackState->getPieceInBoard(static_cast<File>(j), static_cast<Rank>(i));
 			if (whitePiece != nullptr) 
 			{
-				board[rank][file] = Cell(Player::white, whitePiece->GetType(), false, false);
+				board[i][j] = Cell(Player::white, whitePiece->GetType(), false, false);
 			}
 			else if (blackPiece != nullptr) 
 			{
-				board[rank][file] = Cell(Player::black, blackPiece->GetType(), false, false);
+				board[i][j] = Cell(Player::black, blackPiece->GetType(), false, false);
 			}
 			else 
 			{
-				board[rank][file] = Cell(Player::playerNone, PieceType::typeNone, false, false);
+				board[i][j] = Cell(Player::playerNone, PieceType::typeNone, false, false);
 			}
+
+            //공격 정보 초기화
+            board[i][j].AttackedByBlack = board[i][j].AttckedByWhite = false;
 		}
 	}
 	
+    vector<Piece*> whitePieces = whiteState->GetPieces();
+    vector<Piece*> blackPieces = blackState->GetPieces();
+
+    for(Piece* p : whitePieces)
+    {
+        for(auto pos : p->CheckAttackCell(board))
+        {
+            board[pos.second][pos.first].AttckedByWhite = true;
+        }
+    }
+
+        for(Piece* p : blackPieces)
+    {
+        for(auto pos : p->CheckAttackCell(board))
+        {
+            board[pos.second][pos.first].AttackedByBlack = true;
+        }
+    }
 }
 
 void Game::ShowBoard() const
