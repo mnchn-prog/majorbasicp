@@ -9,22 +9,34 @@ bool Knight::isMoveable(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Files
 	{
 		int nextX = curX + dx[i];
 		int nextY = curY + dy[i];
+		if(board[nextY][nextX].pieceColor == color)
+		{
+			if(i == 7) return false;
+			continue;
+		}
 
-		if (nextX == static_cast<int>(x) && nextY == static_cast<int>(y))
+		if (nextX == x && nextY == y)
 		{
 			break;
 		}
+
 		if (i == 7)
 			return false;
 	}
 
-	if (board[y][x].currentPiece != PieceType::typeNone && board[y][x].pieceColor == color) return false;
 	return true;
 }
 
-void Knight::MovePos(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize])
-{
-	//if (!isMoveable(x, y, board)) { cout << "유효하지 않은 이동" << endl; system("pause"); return; }
-	pos.x = x;
-	pos.y = y;
+vector<pair<int,int>> Knight::CheckAttackCell(Cell(&board)[Rank::Ranksize][File::Filesize]) const
+{	
+	vector<pair<int, int>> attackPos;
+	for (int i = 0; i < 8; i++)
+	{
+		int attackX = pos.x + dx[i];
+		int attackY = pos.y + dy[i];
+		if(attackX < 0 || attackX >= File::Filesize || attackY < 0 || attackY >= Rank::Ranksize) continue;
+		
+		attackPos.push_back({attackX, attackY});
+	}
+	return attackPos;
 }

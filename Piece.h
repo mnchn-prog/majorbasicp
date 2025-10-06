@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <vector>
 #include "enum.h"
 #include "Cell.h"
 using namespace std;
@@ -19,9 +20,11 @@ protected:
 	Position pos;
 	const Player color;
 	virtual bool isMoveable(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize]) const = 0;
+	virtual vector<pair<int, int>> CheckAttackCell(Cell(&board)[Rank::Ranksize][File::Filesize]) const = 0;
+
 public:
 	Piece(File x, Rank y, PieceType type, Player color) : pos{x, y}, type(type), color(color) {}
 	PieceType GetType() const { return type; }
 	Position GetPos() const { return pos; }
-	virtual void MovePos(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize]) = 0;
+	void MovePos(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize]);
 };
