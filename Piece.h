@@ -25,7 +25,7 @@ public:
 	Piece(File x, Rank y, PieceType type, Player color) : pos{x, y}, type(type), color(color) {}
 	PieceType GetType() const { return type; }
 	Position GetPos() const { return pos; }
-	void MovePos(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize]);
+	bool MovePos(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize]);
 	virtual vector<pair<int, int>> CheckAttackCell(Cell(&board)[Rank::Ranksize][File::Filesize]) const = 0;
 
 };

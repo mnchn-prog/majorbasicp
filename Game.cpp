@@ -76,10 +76,14 @@ void Game::MovePiece(string startPos, string endPos)
 	Rank endY = static_cast<Rank>(endPos[1] - '1');
 	
     // 기물 이동 시도
-	currentPiece->MovePos(endX, endY, board);
-    
-    // MovePos에서 이동이 성공했다고 가정하고 턴을 넘깁니다. (MovePos에서 유효하지 않은 이동인 경우 cout과 pause를 사용하고 있습니다)
-    turn = (turn == Player::white ? Player::black : Player::white);
+	if(currentPiece->MovePos(endX, endY, board))
+    {
+        turn = (turn == Player::white ? Player::black : Player::white);
+    }
+    else
+    {
+        // 다시 입력받기 근데 구조 바꿔야함. 기획서대로면 startPos 먼저 받고 검증, 문제 없으면 endPos 받기
+    }
 }
 
 void Game::RefreshBoard()
