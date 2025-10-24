@@ -2,21 +2,17 @@
 
 bool Bishop::isMoveable(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize]) const
 {
-	for (int i = 0; i < 14; i++)
+	for (int i = 0; i < 28; i++)
 	{
 		int nextX = pos.x + dx[i];
 		int nextY = pos.y + dy[i];
 		if(nextX < 0 || nextX >= File::Filesize || nextY < 0 || nextY >= Rank::Ranksize) //범위 벗어나면
 		{
-			if(i < 7) // -체크할 때 범위 넘어가면 + 체크 시작
-			{
-				i = 6;
-				continue;
-			}
-			else // false 리턴
-			{
-				return false;
-			}
+			if(i < 7) i = 6;
+			else if(i < 14) i = 13;
+			else if(i < 21) i = 20;
+			else break;
+			continue;
 		}
 		if(board[nextY][nextX].pieceColor == Player::playerNone) // 막는 기물 없을 때
 		{
@@ -27,15 +23,11 @@ bool Bishop::isMoveable(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Files
 		}
 		else if(board[nextY][nextX].currentPiece == color) // 내 기물이 막을 때
 		{
-			if(i < 7) // -부분 체크 중이라면
-			{
-				i = 6; // + 부분 체크로 넘어가기
-				continue;
-			}
-			else // +부분 체크 중이라면
-			{
-				return false; 
-			}
+			if(i < 7) i = 6;
+			else if(i < 14) i = 13;
+			else if(i < 21) i = 20;
+			else break;
+			continue;
 		}
 		else // 상대 기물이 막을 때
 		{
@@ -45,18 +37,14 @@ bool Bishop::isMoveable(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Files
 			}
 			else // 더 먼 칸 체크할 수 없으니 넘어가기
 			{
-				if(i < 7)
-				{
-					i = 6;
-					continue;
-				}
-				else
-				{
-					return false;
-				}
+				if(i < 7) i = 6;
+				else if(i < 14) i = 13;
+				else if(i < 21) i = 20;
+				else break;
+				continue;
 			}
 		}
-		if (i == 13) // 마지막까지 좌표 못찾았을 때
+		if (i == 27) // 마지막까지 좌표 못찾았을 때
 			return false;
 	}
 
@@ -75,15 +63,11 @@ vector<pair<int,int>> Bishop::CheckAttackCell(Cell(&board)[Rank::Ranksize][File:
 		int attackY = pos.y + dy[i];
 		if(attackX < 0 || attackX >= File::Filesize || attackY < 0 || attackY >= Rank::Ranksize) //범위 벗어나면
 		{
-			if(i < 7) // -체크할 때 범위 넘어가면 + 체크 시작
-			{
-				i = 6;
-				continue;
-			}
-			else // break(더 체크할 범위 없음)
-			{
-				break;
-			}
+			if(i < 7) i = 6;
+			else if(i < 14) i = 13;
+			else if(i < 21) i = 20;
+			else break;
+			continue;
 		}
 
 		if(board[attackY][attackX].pieceColor == Player::playerNone) // 막는 기물 없을 때
@@ -94,15 +78,11 @@ vector<pair<int,int>> Bishop::CheckAttackCell(Cell(&board)[Rank::Ranksize][File:
 		else // 기물이 있을 때
 		{
 			attackPos.push_back({attackX, attackY});
-			if(i < 7) // -부분 체크 중이라면
-			{
-				i = 6; // + 부분 체크로 넘어가기
-				continue;
-			}
-			else // +부분 체크 중이라면
-			{
-				break; 
-			}
+			if(i < 7) i = 6;
+			else if(i < 14) i = 13;
+			else if(i < 21) i = 20;
+			else break;
+			continue;
 		}
 	}
 	return attackPos;

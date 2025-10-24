@@ -11,5 +11,4 @@ private:
 public:
 	King(File x, Rank y, PieceType type, Player color) : Piece(x, y, type, color) {}
 	vector<pair<int,int>> CheckAttackCell(Cell(&board)[Rank::Ranksize][File::Filesize]) const override;
-
 };

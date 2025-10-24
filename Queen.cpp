@@ -22,10 +22,3 @@ bool Queen::isMoveable(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesi
 	if (board[y][x].currentPiece != PieceType::typeNone && board[y][x].pieceColor == color) return false;
 	return true;
 }
-
-void Queen::MovePos(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize])
-{
-	//if (!isMoveable(x, y, board)) { /*cout << "유효하지 않은 이동" << endl;*/ system("pause"); return; }
-	pos.x = x;
-	pos.y = y;
-}
