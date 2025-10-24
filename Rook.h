@@ -4,8 +4,8 @@
 class Rook: public Piece
 {
 private:
-	const int dx[8] = { -2, -2, -1, -1, 1, 1, 2, 2 };
-	const int dy[8] = { -1, 1, -2, 2, -2, 2, -1, 1 };
+	const int dx[28] = { -1, -2, -3, -4, -5, -6, -7, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	const int dy[28] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, -1, -2, -3, -4, -5, -6, -7 };
 	bool isMoveable(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize]) const override;
 
 public:
