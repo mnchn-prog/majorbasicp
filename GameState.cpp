@@ -11,3 +11,8 @@ Piece* GameState::getPieceInBoard(File file, Rank rank) const
     return nullptr;
 }
 
+GameState::~GameState()
+{
+    for(auto& piece: pieces)
+        delete piece;
+}

@@ -1,8 +1,9 @@
 #pragma once
-#include "GameState.h"
 #include "Cell.h"
 #include <utility>
 #include <conio.h>
+#include "GameState.h"
+
 class Game
 {
 private:
@@ -20,4 +21,5 @@ public:
 	void ShowCommand();
 	void ShowRule();
 
+	inline Player GetTrun() const {return turn;}
 };

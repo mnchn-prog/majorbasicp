@@ -5,7 +5,6 @@ string Game::unicodeForPiece(Player color, PieceType p) const{
     if(color == Player::black)
     {
         switch(p){
-
             case PieceType::typeKing: return "♚"; case PieceType::typeQueen: return "♛"; case PieceType::typeRook: return "♜";
             case PieceType::typeBishop: return "♝"; case PieceType::typeKnight: return "♞"; case PieceType::typePawn: return "♟";
             default: 
@@ -78,10 +77,14 @@ void Game::MovePiece(string startPos, string endPos)
 	Rank endY = static_cast<Rank>(endPos[1] - '1');
 	
     // 기물 이동 시도
-	currentPiece->MovePos(endX, endY, board);
-    
-    // MovePos에서 이동이 성공했다고 가정하고 턴을 넘깁니다. (MovePos에서 유효하지 않은 이동인 경우 cout과 pause를 사용하고 있습니다)
-    turn = (turn == Player::white ? Player::black : Player::white);
+	if(currentPiece->MovePos(endX, endY, board))
+    {
+        turn = (turn == Player::white ? Player::black : Player::white);
+    }
+    else
+    {
+        // 다시 입력받기 근데 구조 바꿔야함. 기획서대로면 startPos 먼저 받고 검증, 문제 없으면 endPos 받기
+    }
 }
 
 void Game::RefreshBoard()
@@ -90,25 +93,44 @@ void Game::RefreshBoard()
 	{
 		for (int j = 0; j < File::Filesize; j++)
 		{
-			File file = static_cast<File>(j);
-			Rank rank = static_cast<Rank>(i);
-			Piece* whitePiece = whiteState->getPieceInBoard(file, rank);
-			Piece* blackPiece = blackState->getPieceInBoard(file, rank);
+			Piece* whitePiece = whiteState->getPieceInBoard(static_cast<File>(j), static_cast<Rank>(i));
+			Piece* blackPiece = blackState->getPieceInBoard(static_cast<File>(j), static_cast<Rank>(i));
 			if (whitePiece != nullptr) 
 			{
-				board[rank][file] = Cell(Player::white, whitePiece->GetType(), false, false);
+				board[i][j] = Cell(Player::white, whitePiece->GetType(), false, false);
 			}
 			else if (blackPiece != nullptr) 
 			{
-				board[rank][file] = Cell(Player::black, blackPiece->GetType(), false, false);
+				board[i][j] = Cell(Player::black, blackPiece->GetType(), false, false);
 			}
 			else 
 			{
-				board[rank][file] = Cell(Player::playerNone, PieceType::typeNone, false, false);
+				board[i][j] = Cell(Player::playerNone, PieceType::typeNone, false, false);
 			}
+
+            //공격 정보 초기화
+            board[i][j].AttackedByBlack = board[i][j].AttckedByWhite = false;
 		}
 	}
 	
+    vector<Piece*> whitePieces = whiteState->GetPieces();
+    vector<Piece*> blackPieces = blackState->GetPieces();
+
+    for(Piece* p : whitePieces)
+    {
+        for(auto pos : p->CheckAttackCell(board))
+        {
+            board[pos.second][pos.first].AttckedByWhite = true;
+        }
+    }
+
+        for(Piece* p : blackPieces)
+    {
+        for(auto pos : p->CheckAttackCell(board))
+        {
+            board[pos.second][pos.first].AttackedByBlack = true;
+        }
+    }
 }
 
 void Game::ShowBoard() const
@@ -118,6 +140,7 @@ void Game::ShowBoard() const
     cout << "  Black" << space << arrow << space << "White  " << endl;
     cout << "  30:00" << space << " " << space << "30:00  " << endl;
     // 1. 상단 경계선 출력
+    cout << "black | 03:00" << endl;
     cout << "   ";
     for (int j = 0; j < File::Filesize; j++)
     {
@@ -160,6 +183,7 @@ void Game::ShowBoard() const
         cout << " " << static_cast<char>(i + 'a') << "  "; // 파일 문자 사이 간격 조정
     }
     cout << endl;
+    cout << "white | 03:00" << endl;
 }
 int Game::get_visual_width(const string& s) {
     int width = 0;
