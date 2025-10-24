@@ -29,6 +29,7 @@ Cell board[Rank::Ranksize][File::Filesize];
 
 GameMode ChoiceGameMode();
 void StartGame(Game game);
+
 int main()
 {
     // ⬇️ Windows 환경에서 콘솔 출력 인코딩을 UTF-8로 설정
@@ -101,7 +102,6 @@ GameMode ChoiceGameMode()
         case 1: return GameMode::classical;
         case 2: return GameMode::rapid;
         case 3: return GameMode::blitz;
-        case 4: return GameMode::bullet;
         return GameMode::classical;
     }
 }

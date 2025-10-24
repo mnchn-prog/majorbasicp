@@ -22,3 +22,9 @@ bool Queen::isMoveable(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesi
 	if (board[y][x].currentPiece != PieceType::typeNone && board[y][x].pieceColor == color) return false;
 	return true;
 }
+
+vector<pair<int,int>> Queen::CheckAttackCell(Cell(&board)[Rank::Ranksize][File::Filesize]) const
+{
+	vector<pair<int,int>> re{{1, 1}};
+	return re;
+}

@@ -11,3 +11,8 @@ bool Pawn::isMoveable(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesiz
 	return true;
 }
 
+vector<pair<int,int>> Pawn::CheckAttackCell(Cell(&board)[Rank::Ranksize][File::Filesize]) const
+{
+	vector<pair<int,int>> re{{1, 1}};
+	return re;
+}
