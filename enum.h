@@ -49,5 +49,5 @@ enum GameMode
 	classical,
 	rapid,
 	blitz,
-	bullet
 };
+

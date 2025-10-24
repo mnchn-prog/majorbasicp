@@ -7,7 +7,8 @@ string Game::unicodeForPiece(Player color, PieceType p) const{
         switch(p){
             case PieceType::typeKing: return "♚"; case PieceType::typeQueen: return "♛"; case PieceType::typeRook: return "♜";
             case PieceType::typeBishop: return "♝"; case PieceType::typeKnight: return "♞"; case PieceType::typePawn: return "♟";
-            default: return ".";
+            default: 
+                return ".";
         }
     }
     else
@@ -134,6 +135,10 @@ void Game::RefreshBoard()
 
 void Game::ShowBoard() const
 {
+    string space(11, ' ');
+    char arrow = turn == Player::white ? '>' : '<';
+    cout << "  Black" << space << arrow << space << "White  " << endl;
+    cout << "  30:00" << space << " " << space << "30:00  " << endl;
     // 1. 상단 경계선 출력
     cout << "black | 03:00" << endl;
     cout << "   ";
@@ -179,5 +184,146 @@ void Game::ShowBoard() const
     }
     cout << endl;
     cout << "white | 03:00" << endl;
+}
+int Game::get_visual_width(const string& s) {
+    int width = 0;
+    for (size_t i = 0; i < s.length(); ) {
+        unsigned char c = s[i];
+        if (c < 0x80) { // ASCII 문자 (1바이트)
+            width += 1;
+            i += 1;
+        }
+        else { // 멀티바이트 문자 (한글 등)
+            width += 2;
+            i += 3; // UTF-8 한글은 3바이트
+        }
+    }
+    return width;
+}
+void Game::ShowRule()
+{
+    cout << "[Welcome to Chess World]" << endl;
+    cout << "체스를 모방한 2인용 게임으로 백과 흑이 차례를 번갈아가면서 진행한다. " << endl;
+    cout << "각 차례에 체스판의 좌표를 입력하여 기물을 선택하고 이동할 수 있다. " << endl;
+    cout << "기물마다 이동방법은 상이하며 규칙으로 정의된 움직임만을 허용한다. " << endl;
+    cout << "상대방의 왕을 먼저 잡으면 승리하고 시간을 다 써버리면 패배한다. " << endl;
+    cout << "또한 항복, 합의에 의한 무승부로 게임을 종료할 수 있다." << endl;
+    std::vector<std::pair<std::string, std::string>> data = {
+ {"폰", "기본 한칸 전진, 처음만 두칸 가능"},
+ {"나이트", "L자 형태로 앞으로 2칸 옆으로 1칸"},
+ {"비숍", "대각선 방향으로 원하는 만큼 이동 가능하다."},
+ {"룩", "사방으로 원하는 만큼 이동할 수 있다."},
+ {"퀸", "모든방향으로 원하는 만큼 이동할 수 있다"},
+ {"킹", "모든방향으로 한 칸씩만 움직일 수 있다."}
+ //{"help", "도움말을 표시합니다."}
+    };
+
+    std::string header1 = "기물";
+    std::string header2 = "이동방법";
+
+    // 너비 설정
+    int col1_width = 15;
+    int col2_width = 45;
+
+    // --- 표 그리기 시작 ---
+
+    // 1. 상단 테두리
+    std::cout << "┌";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┬";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┐" << std::endl;
+
+    // 2. 헤더 내용
+    std::cout << "│ " << header1;
+    for (int i = 0; i < col1_width - get_visual_width(header1) - 1; ++i) std::cout << " ";
+    std::cout << "│ " << header2;
+    for (int i = 0; i < col2_width - get_visual_width(header2) - 1; ++i) std::cout << " ";
+    std::cout << "│" << std::endl;
+
+    // 3. 헤더와 내용의 구분선
+    std::cout << "├";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┼";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┤" << std::endl;
+
+    // 4. 데이터 내용 (4줄)
+    for (const auto& row : data) {
+        std::cout << "│ " << row.first;
+        for (int i = 0; i < col1_width - get_visual_width(row.first) - 1; ++i) std::cout << " ";
+        std::cout << "│ " << row.second;
+        for (int i = 0; i < col2_width - get_visual_width(row.second) - 1; ++i) std::cout << " ";
+        std::cout << "│" << std::endl;
+    }
+
+    // 5. 하단 테두리
+    std::cout << "└";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┴";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┘" << std::endl;
+    
+    _getch();
+    return;
+}
+void Game::ShowCommand()
+{
+    std::vector<std::pair<std::string, std::string>> data = {
+     {"[a-h][1-8]", "움직일 기물을 선택한다."},
+     {"gg, GG", "상대에게 항복한다"},
+     {"bb, BB", "무승부를 신청한다"},
+     {"tt, TT", "남은 시간을 갱신한다．"},
+     {"qq, QQ", "남은시간을 확인한다."},
+    };
+
+    std::string header1 = "명령어";
+    std::string header2 = "해석";
+
+    // 너비 설정
+    int col1_width = 15;
+    int col2_width = 25;
+
+    // --- 표 그리기 시작 ---
+
+    // 1. 상단 테두리
+    std::cout << "┌";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┬";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┐" << std::endl;
+
+    // 2. 헤더 내용
+    std::cout << "│ " << header1;
+    for (int i = 0; i < col1_width - get_visual_width(header1) - 1; ++i) std::cout << " ";
+    std::cout << "│ " << header2;
+    for (int i = 0; i < col2_width - get_visual_width(header2) - 1; ++i) std::cout << " ";
+    std::cout << "│" << std::endl;
+
+    // 3. 헤더와 내용의 구분선
+    std::cout << "├";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┼";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┤" << std::endl;
+
+    // 4. 데이터 내용 (4줄)
+    for (const auto& row : data) {
+        std::cout << "│ " << row.first;
+        for (int i = 0; i < col1_width - get_visual_width(row.first) - 1; ++i) std::cout << " ";
+        std::cout << "│ " << row.second;
+        for (int i = 0; i < col2_width - get_visual_width(row.second) - 1; ++i) std::cout << " ";
+        std::cout << "│" << std::endl;
+    }
+
+    // 5. 하단 테두리
+    std::cout << "└";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┴";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┘" << std::endl;
+    _getch();
+    
+    return;
 }
 

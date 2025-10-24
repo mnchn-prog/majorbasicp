@@ -1,5 +1,7 @@
 #pragma once
 #include "Cell.h"
+#include <utility>
+#include <conio.h>
 #include "GameState.h"
 
 class Game
@@ -14,5 +16,9 @@ public:
     void MovePiece(string startPos, string endPos);
 	void ShowBoard() const;
 	void RefreshBoard();
+	int get_visual_width(const string& s);
+	void ShowCommand();
+	void ShowRule();
+
 	inline Player GetTrun() const {return turn;}
 };
