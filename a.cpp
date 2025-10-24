@@ -28,12 +28,14 @@ using namespace std; // std::string, std::cout 등을 위해 필요
 Cell board[Rank::Ranksize][File::Filesize];
 
 GameMode ChoiceGameMode();
+void InitializeConsole();
 int main()
 {
     // ⬇️ Windows 환경에서 콘솔 출력 인코딩을 UTF-8로 설정
-#ifdef _WIN32
-    SetConsoleOutputCP(CP_UTF8);
-#endif
+//#ifdef _WIN32
+//    SetConsoleOutputCP(CP_UTF8);
+//#endif
+    InitializeConsole();
     
 	// 1. 기물 초기 배치 및 목록 생성
     vector<Piece*> whitePieces;
@@ -76,10 +78,20 @@ int main()
 
     // 3. 게임 시작
 	Game game(board, &w, &b, Player::white);
-
-    cout << "1. 게임 시작 2. 게임 모드 3. 게임 설명 4. 프로그램 종료 \n번호를 입력하세요(1~4): ";
-    int num; cin >> num;
     GameMode gameMode = GameMode::classical;
+
+    std::cout << "=========================================\n";
+    std::cout << "||                                     ||\n";
+    std::cout << "||             CHESS GAME              ||\n";
+    std::cout << "||                                     ||\n";
+    std::cout << "||   1. 게임 시작                      ||\n";
+    std::cout << "||   2. 게임 모드                      ||\n";
+    std::cout << "||   3. 게임 규칙                      ||\n";
+    std::cout << "||   4. 종료                           ||\n";
+    std::cout << "||                                     ||\n";
+    std::cout << "=========================================\n";
+    std::cout << ">> 선택하세요: ";
+    int num; cin >> num;
     switch(num)
     {
 	    case 1:
@@ -88,7 +100,7 @@ int main()
 		        system("cls");
 		        game.RefreshBoard();
 		        game.ShowBoard();
-		        system("pause");
+		        //system("pause");
 		        string startPos, endPos;
 		        cout << "움직일 기물 위치 입력: ";
 		        cin >> startPos;
@@ -100,18 +112,27 @@ int main()
         case 2:
             gameMode = ChoiceGameMode();
             break;
+        case 3:
+            game.ShowCommand();
+            
     }
 }
 
 GameMode ChoiceGameMode()
 {
-    cout << "1. 클래시컬 2. 래피드 3. 블리츠 4. 불렛 \n 번호를 입력하세요: ";
+    cout << "1. 클래시컬 2. 래피드 3. 블리츠 \n>>번호를 입력하세요: ";
     int n; cin >> n;
     switch(n)
     {
         case 1: return GameMode::classical;
         case 2: return GameMode::rapid;
         case 3: return GameMode::blitz;
-        case 4: return GameMode::bullet;
     }
+    cout;
+}
+void InitializeConsole() {
+#if defined(_WIN32)
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+#endif
 }
