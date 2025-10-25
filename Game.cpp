@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "algorithm"
 
 string Game::unicodeForPiece(Player color, PieceType p) const{
 

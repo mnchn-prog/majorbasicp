@@ -8,7 +8,7 @@ bool Piece::MovePos(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize]
 	{
 		capturedPiece = board[y][x].pPiece;
 	}
-	
 	pos.x = x;
 	pos.y = y;
+	return true;
 }

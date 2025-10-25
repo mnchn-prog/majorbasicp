@@ -1,7 +1,8 @@
 #pragma once
 #include <iostream>
 #include "enum.h"
-#include "Piece.h"
+
+class Piece;
 
 struct Cell
 {
