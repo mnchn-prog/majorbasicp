@@ -24,20 +24,12 @@ string Game::unicodeForPiece(Player color, PieceType p) const{
 }
 
 Piece* Game::SelectStartPos(File startX, Rank startY) {
-    string startPos;
-    cout << (turn == Player::white ? "[백]" : "[흑]") << " 시작 위치 입력 (예: e2): ";
-    cin >> startPos;
 
     // 입력 유효성 검사
-    if (startPos.size() != 2 || startPos[0] < 'a' || startPos[0] > 'h' ||
-        startPos[1] < '1' || startPos[1] > '8') {
+    if (startX < 0 || startX >= File::Filesize || startY < 0 || startY >= Rank::Ranksize) {
         cout << "⚠️ 유효하지 않은 출발지점 입력값입니다." << endl; // 여기에 문자열 대신 표준 명령어 출력
         return nullptr;
     }
-
-    startX = static_cast<File>(startPos[0] - 'a');
-    startY = static_cast<Rank>(startPos[1] - '1');
-
     Piece* whitePiece = whiteState->getPieceInBoard(startX, startY);
     Piece* blackPiece = blackState->getPieceInBoard(startX, startY);
 
@@ -55,19 +47,13 @@ Piece* Game::SelectStartPos(File startX, Rank startY) {
 // --------------------------------------
 // ② 도착 위치 입력 및 이동 처리
 // --------------------------------------
-bool Game::SelectEndPos(Piece* currentPiece, File startX, Rank startY) {
-    string endPos;
-    cout << "도착 위치 입력 (예: e4): ";
-    cin >> endPos;
+bool Game::SelectEndPos(Piece* currentPiece, File endX, Rank endY) {
+    // 입력 유효성 검사
 
-    if (endPos.size() != 2 || endPos[0] < 'a' || endPos[0] > 'h' ||
-        endPos[1] < '1' || endPos[1] > '8') {
-        cout << "⚠️ 유효하지 않은 도착지점 입력값입니다." << endl; // 여기에 문자열 대신 표준 명령어 출력
+    if (endX < 0 || endX >= File::Filesize || endY < 0 || endY >= Rank::Ranksize) {
+        cout << "⚠️ 유효하지 않은 출발지점 입력값입니다." << endl; // 여기에 문자열 대신 표준 명령어 출력
         return false;
     }
-
-    File endX = static_cast<File>(endPos[0] - 'a');
-    Rank endY = static_cast<Rank>(endPos[1] - '1');
 
     Piece* capturedPiece = nullptr;
 
@@ -160,6 +146,8 @@ void Game::MovePiece(string startPos, string endPos)
 */
 void Game::RemovePiece(Piece* capturedPiece, Player color)
 {
+    cout << "리무브 피스 call" << endl;
+            system("pause");
     GameState* curState = color == Player::white ? whiteState : blackState;
     vector<Piece*>& p = curState->GetPieces(); 
 
@@ -197,9 +185,6 @@ void Game::RefreshBoard()
 			{
 				board[i][j] = Cell(Player::playerNone, PieceType::typeNone, false, false, nullptr);
 			}
-
-            //공격 정보 초기화
-            board[i][j].AttackedByBlack = board[i][j].AttckedByWhite = false;
 		}
 	}
 	
