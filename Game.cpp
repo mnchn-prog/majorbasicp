@@ -74,15 +74,43 @@ void Game::MovePiece(string startPos, string endPos)
 
 	File endX = static_cast<File>(endPos[0] - 'a');
 	Rank endY = static_cast<Rank>(endPos[1] - '1');
-	
+	// 기물 잡기
+    Piece* capturedPiece = nullptr;
     // 기물 이동 시도
-	if(currentPiece->MovePos(endX, endY, board))
+	if(currentPiece->MovePos(endX, endY, board, capturedPiece))
     {
         turn = (turn == Player::white ? Player::black : Player::white);
+        if(capturedPiece != nullptr)
+        {
+            RemovePiece(capturedPiece, turn); // white면 black이 잡히니까 턴 넘긴다음에 하면 똑같음
+        }
     }
     else
     {
         // 다시 입력받기 근데 구조 바꿔야함. 기획서대로면 startPos 먼저 받고 검증, 문제 없으면 endPos 받기
+    }
+}
+void Game::RemovePiece(Piece* capturedPiece, Player color)
+{
+    GameState* curState = color == Player::white ? whiteState : blackState;
+    vector<Piece*>& p = curState->GetPieces();
+    auto new_end = std::remove_if(p.begin(), p.end(), 
+        [capturedPiece](Piece* currentPiece) {
+            // 원시 포인터 주소가 일치하는지 확인합니다.
+            return currentPiece == capturedPiece;
+        });
+
+    // 3. 기물이 실제로 삭제되는지 확인하고 메모리를 해제합니다.
+    // 삭제된 요소가 있다면 (즉, new_end가 p.end()가 아니라면)
+    if (new_end != p.end()) {
+        // new_end부터 p.end() 직전까지의 모든 포인터가 삭제 대상입니다.
+        for (auto it = new_end; it != p.end(); ++it) {
+            delete *it; // 힙 메모리 해제
+            *it = nullptr; // 안전을 위해 포인터는 nullptr로 설정 (선택 사항)
+        }
+        
+        // 4. erase 호출: vector의 크기를 실제로 줄입니다.
+        p.erase(new_end, p.end());
     }
 }
 
@@ -96,15 +124,15 @@ void Game::RefreshBoard()
 			Piece* blackPiece = blackState->getPieceInBoard(static_cast<File>(j), static_cast<Rank>(i));
 			if (whitePiece != nullptr) 
 			{
-				board[i][j] = Cell(Player::white, whitePiece->GetType(), false, false);
+				board[i][j] = Cell(Player::white, whitePiece->GetType(), false, false, whitePiece);
 			}
 			else if (blackPiece != nullptr) 
 			{
-				board[i][j] = Cell(Player::black, blackPiece->GetType(), false, false);
+				board[i][j] = Cell(Player::black, blackPiece->GetType(), false, false, blackPiece);
 			}
 			else 
 			{
-				board[i][j] = Cell(Player::playerNone, PieceType::typeNone, false, false);
+				board[i][j] = Cell(Player::playerNone, PieceType::typeNone, false, false, nullptr);
 			}
 
             //공격 정보 초기화
@@ -123,7 +151,7 @@ void Game::RefreshBoard()
         }
     }
 
-        for(Piece* p : blackPieces)
+    for(Piece* p : blackPieces)
     {
         for(auto pos : p->CheckAttackCell(board))
         {
