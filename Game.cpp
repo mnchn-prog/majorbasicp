@@ -165,7 +165,10 @@ void Game::RemovePiece(Piece* capturedPiece, Player color)
 
 void Game::RefreshBoard()
 {
-	for (int i = 0; i < Rank::Ranksize; i++)
+    Position wKingPos, bKingPos;
+    wKingPos.x = bKingPos.x = File::Filesize;
+	wKingPos.y = bKingPos.y = Rank::Ranksize;
+    for (int i = 0; i < Rank::Ranksize; i++)
 	{
 		for (int j = 0; j < File::Filesize; j++)
 		{
@@ -174,18 +177,34 @@ void Game::RefreshBoard()
 			if (whitePiece != nullptr) 
 			{
 				board[i][j] = Cell(Player::white, whitePiece->GetType(), false, false, whitePiece);
-			}
+                if(whitePiece->GetType() == PieceType::typeKing)
+                {
+                    wKingPos = whitePiece->GetPos();
+                }
+            }
 			else if (blackPiece != nullptr) 
 			{
 				board[i][j] = Cell(Player::black, blackPiece->GetType(), false, false, blackPiece);
-			}
+                if(blackPiece->GetType() == PieceType::typeKing)
+                {
+                    bKingPos = blackPiece->GetPos();
+                }
+            }
 			else 
 			{
 				board[i][j] = Cell(Player::playerNone, PieceType::typeNone, false, false, nullptr);
 			}
 		}
 	}
-	
+	if(wKingPos.x == 8 && wKingPos.y == 8)
+    {
+        //게임 결과 출력 (흑 승)
+    }
+    else if(bKingPos.x == 8 && bKingPos.y == 8)
+    {
+        //게임 결과 출력 (백 승)
+    }
+
     vector<Piece*> whitePieces = whiteState->GetPieces();
     vector<Piece*> blackPieces = blackState->GetPieces();
 
@@ -203,6 +222,14 @@ void Game::RefreshBoard()
         {
             board[pos.second][pos.first].AttackedByBlack = true;
         }
+    }
+    if(board[wKingPos.x][wKingPos.y].AttackedByBlack)
+    {
+        cout << "체크입니다" << endl; // 5초간..? 스레드 슬립?
+    }
+    if(board[bKingPos.x][bKingPos.y].AttckedByWhite)
+    {
+        cout << "체크입니다" << endl; // 5초간?
     }
 }
 
