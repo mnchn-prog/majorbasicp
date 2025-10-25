@@ -117,8 +117,15 @@ void StartGame(Game game)
 	string startPos, endPos;
 	cout << (game.GetTrun() == 0 ? "white" : "black") << " | 움직일 기물 위치 입력: ";
 	cin >> startPos;
+    File startX = static_cast<File>(startPos[0] - 'a');
+    Rank startY = static_cast<Rank>(startPos[0] - '1');
+    Piece* selectedPiece = game.SelectStartPos(startX, startY);
+
 	cout << (game.GetTrun() == 0 ? "white" : "black") << " | 도착할 위치 입력: ";
 	cin >> endPos;
-	game.MovePiece(startPos, endPos);
+
+    File endX = static_cast<File>(startPos[0] - 'a');
+    Rank endY = static_cast<Rank>(startPos[0] - '1');
+	game.SelectEndPos(selectedPiece, endX, endY);
 	}
 }

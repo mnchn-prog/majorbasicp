@@ -22,6 +22,72 @@ string Game::unicodeForPiece(Player color, PieceType p) const{
     return ".";
 }
 
+Piece* Game::SelectStartPos(File startX, Rank startY) {
+    string startPos;
+    cout << (turn == Player::white ? "[백]" : "[흑]") << " 시작 위치 입력 (예: e2): ";
+    cin >> startPos;
+
+    // 입력 유효성 검사
+    if (startPos.size() != 2 || startPos[0] < 'a' || startPos[0] > 'h' ||
+        startPos[1] < '1' || startPos[1] > '8') {
+        cout << "⚠️ 유효하지 않은 출발지점 입력값입니다." << endl; // 여기에 문자열 대신 표준 명령어 출력
+        return nullptr;
+    }
+
+    startX = static_cast<File>(startPos[0] - 'a');
+    startY = static_cast<Rank>(startPos[1] - '1');
+
+    Piece* whitePiece = whiteState->getPieceInBoard(startX, startY);
+    Piece* blackPiece = blackState->getPieceInBoard(startX, startY);
+
+    // 자기 턴의 말인지 확인
+    if (turn == Player::white && whitePiece != nullptr) return whitePiece;
+    if (turn == Player::black && blackPiece != nullptr) return blackPiece;
+
+    else 
+    {
+        cout << "해당 칸에  선택가능한 기물이 없습니다" << endl;
+    }
+    return nullptr;
+}
+
+// --------------------------------------
+// ② 도착 위치 입력 및 이동 처리
+// --------------------------------------
+bool Game::SelectEndPos(Piece* currentPiece, File startX, Rank startY) {
+    string endPos;
+    cout << "도착 위치 입력 (예: e4): ";
+    cin >> endPos;
+
+    if (endPos.size() != 2 || endPos[0] < 'a' || endPos[0] > 'h' ||
+        endPos[1] < '1' || endPos[1] > '8') {
+        cout << "⚠️ 유효하지 않은 도착지점 입력값입니다." << endl; // 여기에 문자열 대신 표준 명령어 출력
+        return false;
+    }
+
+    File endX = static_cast<File>(endPos[0] - 'a');
+    Rank endY = static_cast<Rank>(endPos[1] - '1');
+
+    Piece* capturedPiece = nullptr;
+
+    // 이동 시도
+    if (currentPiece->MovePos(endX, endY, board, capturedPiece)) {
+        // 말이 잡혔다면 제거
+        if (capturedPiece != nullptr) {
+            RemovePiece(capturedPiece, turn == Player::white ? Player::black : Player::white);
+        }
+
+        // 턴 전환
+        turn = (turn == Player::white ? Player::black : Player::white);
+        cout << "기물이 이동되었습니다." << endl;
+        // 체크입니다 5초간 출력, 킹이 잡혔다면 게임결과 출력
+        return true;
+    } else {
+        cout << "잘못된 	행마입니다." << endl;
+        return false;
+    }
+}
+/*
 void Game::MovePiece(string startPos, string endPos)
 {
 	GameState* curState = turn == Player::white ? whiteState : blackState;
@@ -90,6 +156,7 @@ void Game::MovePiece(string startPos, string endPos)
         // 다시 입력받기 근데 구조 바꿔야함. 기획서대로면 startPos 먼저 받고 검증, 문제 없으면 endPos 받기
     }
 }
+*/
 void Game::RemovePiece(Piece* capturedPiece, Player color)
 {
     GameState* curState = color == Player::white ? whiteState : blackState;
