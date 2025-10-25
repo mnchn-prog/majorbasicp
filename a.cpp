@@ -77,11 +77,11 @@ int main()
     GameState b(blackPieces, Player::black);
 
     // 3. 게임 시작
-	Game game(board, &w, &b, Player::white);
 
     cout << "1. 게임 시작 2. 게임 모드 3. 게임 설명 4. 프로그램 종료 \n번호를 입력하세요(1~4): ";
     int num; cin >> num;
     GameMode gameMode = GameMode::classical;
+	Game game(board, &w, &b, Player::white, gameMode);
     switch(num)
     {
 	    case 1:
@@ -89,6 +89,7 @@ int main()
             break;
         case 2:
             gameMode = ChoiceGameMode();
+            game.SetGameMode(gameMode);
             break;
     }
 }
@@ -110,13 +111,34 @@ void StartGame(Game game)
 {
     while (true)
 	{
+    system("pause");
 	system("cls");
 	game.RefreshBoard();
+    game.UpdateTime(); // 턴 시간 차감
 	game.ShowBoard();
+
+    if (game.GetWhiteTime() <= 0 || game.GetBlackTime() <= 0)
+    {
+        cout << (game.GetWhiteTime() <= 0 ? "White" : "Black") << " 시간 종료! 게임 종료." << endl;
+        // 누구 승리인지?
+        break;
+    }
+
     system("pause");
+
 	string startPos, endPos;
 	cout << (game.GetTrun() == 0 ? "white" : "black") << " | 움직일 기물 위치 입력: ";
 	cin >> startPos;
+    
+    // ⬇️ tt 또는 TT 입력 시 현재 시간 출력
+    if (startPos == "tt" || startPos == "TT")
+    {
+        cout << "⏱ White 남은 시간: " << game.FormatTime(game.GetWhiteTime()) << endl;
+        cout << "⏱ Black 남은 시간: " << game.FormatTime(game.GetBlackTime()) << endl;
+        system("pause");
+        continue;
+    }
+
     File startX = static_cast<File>(startPos[0] - 'a');
     Rank startY = static_cast<Rank>(startPos[1] - '1');
     Piece* selectedPiece = game.SelectStartPos(startX, startY);

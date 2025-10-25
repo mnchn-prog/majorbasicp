@@ -1,5 +1,7 @@
 #include "Game.h"
-#include "algorithm"
+#include <algorithm>
+
+using namespace std;
 
 string Game::unicodeForPiece(Player color, PieceType p) const{
 
@@ -236,7 +238,7 @@ void Game::RefreshBoard()
 void Game::ShowBoard() const
 {
     // 1. 상단 경계선 출력
-    cout << "black | 03:00" << endl;
+    cout << "black | " << FormatTime(blackTimeLeft) << endl;
     cout << "   ";
     for (int j = 0; j < File::Filesize; j++)
     {
@@ -279,6 +281,23 @@ void Game::ShowBoard() const
         cout << " " << static_cast<char>(i + 'a') << "  "; // 파일 문자 사이 간격 조정
     }
     cout << endl;
-    cout << "white | 03:00" << endl;
+    cout << "white | " << FormatTime(whiteTimeLeft) << endl;
 }
 
+void Game::UpdateTime()
+{
+   auto now = std::chrono::steady_clock::now();
+   int elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - lastMoveTime).count();
+   if(turn == Player::black) whiteTimeLeft -= elapsed;
+   else blackTimeLeft -= elapsed;
+   lastMoveTime = now;
+}
+
+string Game::FormatTime(int sec) const
+{
+   int m = sec / 60;
+   int s = sec % 60;
+   char buf[6];
+   sprintf(buf, "%02d:%02d", m, s);
+   return string(buf);
+}
