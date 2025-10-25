@@ -93,25 +93,20 @@ void Game::MovePiece(string startPos, string endPos)
 void Game::RemovePiece(Piece* capturedPiece, Player color)
 {
     GameState* curState = color == Player::white ? whiteState : blackState;
-    vector<Piece*>& p = curState->GetPieces();
+    vector<Piece*>& p = curState->GetPieces(); 
+
+    // 1. std::remove_if로 잡힌 기물 포인터의 위치를 끝으로 이동시킴
     auto new_end = std::remove_if(p.begin(), p.end(), 
         [capturedPiece](Piece* currentPiece) {
-            // 원시 포인터 주소가 일치하는지 확인합니다.
             return currentPiece == capturedPiece;
         });
 
-    // 3. 기물이 실제로 삭제되는지 확인하고 메모리를 해제합니다.
-    // 삭제된 요소가 있다면 (즉, new_end가 p.end()가 아니라면)
+    // 2. vector의 크기를 실제로 줄임 (delete는 하지 않음!)
     if (new_end != p.end()) {
-        // new_end부터 p.end() 직전까지의 모든 포인터가 삭제 대상입니다.
-        for (auto it = new_end; it != p.end(); ++it) {
-            delete *it; // 힙 메모리 해제
-            *it = nullptr; // 안전을 위해 포인터는 nullptr로 설정 (선택 사항)
-        }
-        
-        // 4. erase 호출: vector의 크기를 실제로 줄입니다.
         p.erase(new_end, p.end());
     }
+
+    delete capturedPiece; 
 }
 
 void Game::RefreshBoard()
