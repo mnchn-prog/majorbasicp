@@ -52,7 +52,7 @@ bool Game::SelectEndPos(Piece* currentPiece, File endX, Rank endY) {
 
     if (endX < 0 || endX >= File::Filesize || endY < 0 || endY >= Rank::Ranksize) {
         cout << "⚠️ 유효하지 않은 출발지점 입력값입니다." << endl; // 여기에 문자열 대신 표준 명령어 출력
-        return false;
+        return nullptr;
     }
 
     Piece* capturedPiece = nullptr;
@@ -146,8 +146,6 @@ void Game::MovePiece(string startPos, string endPos)
 */
 void Game::RemovePiece(Piece* capturedPiece, Player color)
 {
-    cout << "리무브 피스 call" << endl;
-            system("pause");
     GameState* curState = color == Player::white ? whiteState : blackState;
     vector<Piece*>& p = curState->GetPieces(); 
 

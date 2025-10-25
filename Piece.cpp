@@ -8,13 +8,8 @@ bool Piece::MovePos(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize]
 	{
 		capturedPiece = board[y][x].pPiece;
 		cout << capturedPiece;
-		system("pause");
 	}
 	pos.x = x;
 	pos.y = y;
-	if (capturedPiece != nullptr) {
-    std::cout << "DEBUG: MovePos에서 capturedPiece는 nullptr이 아닙니다. ";
-    system("pause");
-}
 	return true;
 }
