@@ -27,7 +27,7 @@ Piece* Game::SelectStartPos(File startX, Rank startY) {
 
     // 입력 유효성 검사
     if (startX < 0 || startX >= File::Filesize || startY < 0 || startY >= Rank::Ranksize) {
-        cout << "⚠️ 유효하지 않은 출발지점 입력값입니다." << endl; // 여기에 문자열 대신 표준 명령어 출력
+        cout << "유효하지 않은 출발지점 입력값입니다." << endl; // 여기에 문자열 대신 표준 명령어 출력
         return nullptr;
     }
     Piece* whitePiece = whiteState->getPieceInBoard(startX, startY);
@@ -52,7 +52,7 @@ bool Game::SelectEndPos(Piece* currentPiece, File endX, Rank endY) {
 
     if (endX < 0 || endX >= File::Filesize || endY < 0 || endY >= Rank::Ranksize) {
         cout << "⚠️ 유효하지 않은 출발지점 입력값입니다." << endl; // 여기에 문자열 대신 표준 명령어 출력
-        return nullptr;
+        return false;
     }
 
     Piece* capturedPiece = nullptr;
