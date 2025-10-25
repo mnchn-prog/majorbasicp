@@ -1,11 +1,14 @@
+// Rook.h (수정)
+
 #pragma once
 #include "Piece.h"
 
 class Rook: public Piece
 {
 private:
-	const int dx[28] = { -1, -2, -3, -4, -5, -6, -7, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	const int dy[28] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, -1, -2, -3, -4, -5, -6, -7 };
+	const int dx[4] = { 0, 0, -1, 1 }; 
+	const int dy[4] = { 1, -1, 0, 0 };
+    
 	bool isMoveable(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize]) const override;
 
 public:
