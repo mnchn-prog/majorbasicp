@@ -49,7 +49,7 @@ Piece* Game::SelectStartPos(File startX, Rank startY) {
 // --------------------------------------
 // ② 도착 위치 입력 및 이동 처리
 // --------------------------------------
-bool Game::SelectEndPos(Piece* currentPiece, File endX, Rank endY) {
+bool Game::SelectEndPos(Piece* currentPiece, File endX, Rank endY, bool& isPosForm) {
     // 입력 유효성 검사
 
     if (endX < 0 || endX >= File::Filesize || endY < 0 || endY >= Rank::Ranksize) {
@@ -60,9 +60,11 @@ bool Game::SelectEndPos(Piece* currentPiece, File endX, Rank endY) {
     Piece* capturedPiece = nullptr;
 
     // 이동 시도
-    if (currentPiece->MovePos(endX, endY, board, capturedPiece)) {
+    if (currentPiece->MovePos(endX, endY, board, capturedPiece)) 
+    {
         // 말이 잡혔다면 제거
-        if (capturedPiece != nullptr) {
+        if (capturedPiece != nullptr) 
+        {
             RemovePiece(capturedPiece, turn == Player::white ? Player::black : Player::white);
         }
 
@@ -71,8 +73,12 @@ bool Game::SelectEndPos(Piece* currentPiece, File endX, Rank endY) {
         cout << "기물이 이동되었습니다." << endl;
         // 체크입니다 5초간 출력, 킹이 잡혔다면 게임결과 출력
         return true;
-    } else {
+    } 
+    
+    else 
+    {
         cout << "잘못된 	행마입니다." << endl;
+        isPosForm = true;
         return false;
     }
 }

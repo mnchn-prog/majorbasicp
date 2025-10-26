@@ -111,43 +111,70 @@ void StartGame(Game game)
 {
     while (true)
 	{
-    system("pause");
-	system("cls");
-	game.RefreshBoard();
-    game.UpdateTime(); // 턴 시간 차감
-	game.ShowBoard();
-
-    if (game.GetWhiteTime() <= 0 || game.GetBlackTime() <= 0)
-    {
-        cout << (game.GetWhiteTime() <= 0 ? "White" : "Black") << " 시간 종료! 게임 종료." << endl;
-        // 누구 승리인지?
-        break;
-    }
-
-    system("pause");
-
-	string startPos, endPos;
-	cout << (game.GetTrun() == 0 ? "white" : "black") << " | 움직일 기물 위치 입력: ";
-	cin >> startPos;
-    
-    // ⬇️ tt 또는 TT 입력 시 현재 시간 출력
-    if (startPos == "tt" || startPos == "TT")
-    {
-        cout << "⏱ White 남은 시간: " << game.FormatTime(game.GetWhiteTime()) << endl;
-        cout << "⏱ Black 남은 시간: " << game.FormatTime(game.GetBlackTime()) << endl;
         system("pause");
-        continue;
+	    system("cls");
+
+        game.RefreshBoard();
+        game.UpdateTime(); // 턴 시간 차감
+	    game.ShowBoard();
+
+	    string startPos, endPos;
+        Piece* selectedPiece = nullptr;
+        while(selectedPiece == nullptr)
+        {   
+	        cout << (game.GetTrun() == 0 ? "white" : "black") << " | 움직일 기물 위치 입력: ";
+	        cin >> startPos;
+            
+            // ⬇️ tt 또는 TT 입력 시 현재 시간 출력
+            if (startPos == "tt" || startPos == "TT")
+            {
+                cout << "⏱ White 남은 시간: " << game.FormatTime(game.GetWhiteTime()) << endl;
+                cout << "⏱ Black 남은 시간: " << game.FormatTime(game.GetBlackTime()) << endl;
+                system("pause");
+                continue;
+            }
+            
+            else if(startPos.length() != 2)
+            {
+                // 문법 오류 결과 표시
+                game.UpdateTime();            
+                bool isEnd = game.checkTimeZero();
+                if(isEnd) return;
+                continue;
+            }
+
+            File startX = static_cast<File>(startPos[0] - 'a');
+            Rank startY = static_cast<Rank>(startPos[1] - '1');
+            selectedPiece = game.SelectStartPos(startX, startY);
+
+            if(selectedPiece == nullptr) // 입력이 잘못됐을 때 처리
+            {
+                game.UpdateTime();            
+                bool isEnd = game.checkTimeZero();
+                if(isEnd) return;
+            }
+        }
+
+        bool availableEndPos = false;
+        while(availableEndPos == false)
+        {
+	        cout << (game.GetTrun() == 0 ? "white" : "black") << " | 도착할 위치 입력: ";
+	        cin >> endPos;
+            if(endPos == "qq" || endPos == "QQ") // 되돌리기일 경우 다시 주 프롬포트
+            {
+                break;
+            }
+
+            File endX = static_cast<File>(endPos[0] - 'a');
+            Rank endY = static_cast<Rank>(endPos[1] - '1');
+            if(endPos.length() != 2)
+            {
+                // 문법 오류결과 표시
+                break; // 좌표형식이 아닐 경우에 다시 주 프롬포트
+            }
+            bool isPosForm = false;
+	        availableEndPos = game.SelectEndPos(selectedPiece, endX, endY, isPosForm);
+            if(!isPosForm) break; // 좌표 형식 자체가 아니면 다시 주 프롬포트
+	    }
     }
-
-    File startX = static_cast<File>(startPos[0] - 'a');
-    Rank startY = static_cast<Rank>(startPos[1] - '1');
-    Piece* selectedPiece = game.SelectStartPos(startX, startY);
-
-	cout << (game.GetTrun() == 0 ? "white" : "black") << " | 도착할 위치 입력: ";
-	cin >> endPos;
-
-    File endX = static_cast<File>(endPos[0] - 'a');
-    Rank endY = static_cast<Rank>(endPos[1] - '1');
-	game.SelectEndPos(selectedPiece, endX, endY);
-	}
 }
