@@ -187,8 +187,10 @@ void StartGame(Game& game)
             // ⬇️ tt 또는 TT 입력 시 현재 시간 출력
             if (startPos == "tt" || startPos == "TT")
             {
-                cout << "⏱ White 남은 시간: " << game.FormatTime(game.GetWhiteTime()) << endl;
-                cout << "⏱ Black 남은 시간: " << game.FormatTime(game.GetBlackTime()) << endl;
+                system("pause");
+                game.UpdateTime();
+                system("cls");
+                game.ShowBoard(whiteChecked, blackChecked);
                 system("pause");
                 continue;
             }
