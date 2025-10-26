@@ -113,13 +113,14 @@ void Game::ShowCommandEnd()
 Piece* Game::SelectStartPos(string startPos) {
 
     // 입력 유효성 검사
-    File startX = static_cast<File>(startPos[0] - 'a');
-    Rank startY = static_cast<Rank>(startPos[1] - '1');
+
     if(startPos.length() != 2)
     {
         ShowCommandStart();
         return nullptr;
     }
+    File startX = static_cast<File>(startPos[0] - 'a');
+    Rank startY = static_cast<Rank>(startPos[1] - '1');
 
     if (startX < 0 || startX >= File::Filesize || startY < 0 || startY >= Rank::Ranksize) {
         ShowCommandStart();
@@ -142,15 +143,16 @@ Piece* Game::SelectStartPos(string startPos) {
 
 bool Game::SelectEndPos(Piece* currentPiece, string endPos, bool& isPosForm) {
     // 입력 유효성 검사
-    File endX = static_cast<File>(endPos[0] - 'a');
-    Rank endY = static_cast<Rank>(endPos[1] - '1');
-    
+
     if(endPos.length() != 2)
     {
         ShowCommandEnd();
         return false; // 좌표형식이 아닐 경우에 다시 주 프롬포트 (isPosForm = false)
     }
 
+    File endX = static_cast<File>(endPos[0] - 'a');
+    Rank endY = static_cast<Rank>(endPos[1] - '1');
+    
     if (endX < 0 || endX >= File::Filesize || endY < 0 || endY >= Rank::Ranksize) {
         ShowCommandEnd();
         return false;
@@ -432,12 +434,12 @@ void Game::ShowBoard(bool whiteChecked, bool blackChecked, bool printMoveResult,
         if(whiteChecked)
         {
             cout << "백의 체크입니다" << endl;
-            this_thread::sleep_for(std::chrono::seconds(4));
+            this_thread::sleep_for(std::chrono::seconds(5));
         }
         if(blackChecked)
         {
             cout << "흑의 체크입니다" << endl; // 5초간?
-            this_thread::sleep_for(std::chrono::seconds(4));
+            this_thread::sleep_for(std::chrono::seconds(5));
         }
     }
 

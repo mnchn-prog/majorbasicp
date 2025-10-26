@@ -31,6 +31,7 @@ GameMode ChoiceGameMode();
 void StartGame(Game &game);
 void ShowRule();
 int get_visual_width(const string &s);
+std::string trim(const std::string& s);
 
 int main()
 {
@@ -206,6 +207,7 @@ void StartGame(Game &game)
         bool whiteChecked = false, blackChecked = false;
         if (game.RefreshBoard(whiteChecked, blackChecked))
         {
+            cout << 
             system("pause");
             return;
         }
@@ -222,7 +224,9 @@ void StartGame(Game &game)
                 game.ShowBoard(whiteChecked, blackChecked);
             }
             cout << "움직일 기물 위치 입력: ";
-            cin >> startPos;
+
+            getline(cin, startPos);
+            startPos = trim(startPos);
 
             // ⬇️ tt 또는 TT 입력 시 현재 시간 출력
             if (startPos == "tt" || startPos == "TT")
@@ -242,13 +246,13 @@ void StartGame(Game &game)
             {
                 cout << "정말로 항복하시겠습니까? (항복하려면 \"gg\" 또는 \"GG\"를 입력하세요.): ";
                 string answer;
-                cin.clear(); // 스트림 상태 플래그 초기화
+                /*cin.clear(); // 스트림 상태 플래그 초기화
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                getline(cin, answer);
+                */
+               getline(cin, answer);
                 if (answer == "gg" || answer == "GG")
                 {
                     cout << (game.GetTrun() == Player::white ? "white" : "black") << "님이 항복했습니다." << endl;
-                    cout << "메인메뉴로 돌아가려면 Enter키를 누르세요..." << endl;
                     system("pause");
                     system("cls");
                     return;
@@ -276,13 +280,14 @@ void StartGame(Game &game)
                     cout << "무승부를 제안했습니다. 수락하려면 BB 또는 bb 입력하세요.\n";
 
                     string answer;
+                    /*
                     cin.clear(); // 스트림 상태 플래그 초기화
                     cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    */
                     getline(cin, answer);
                     if (answer == "bb" || answer == "BB")
                     {
                         cout << "무승부가 합의되었습니다, 게임 종료" << endl;
-                        cout << "메인메뉴로 돌아가려면 Enter키를 누르세요..." << endl;
                         system("pause");
                         system("cls");
                         return;
@@ -320,7 +325,8 @@ void StartGame(Game &game)
         while (availableEndPos == false)
         {
             cout << "도착할 위치 입력: ";
-            cin >> endPos;
+            getline(cin, endPos);
+            endPos = trim(endPos);
             if (endPos == "qq" || endPos == "QQ") // 되돌리기일 경우 다시 주 프롬포트
             {
                 break;
@@ -441,4 +447,11 @@ int get_visual_width(const string &s)
         }
     }
     return width;
+}
+
+std::string trim(const std::string& s) {
+    size_t start = s.find_first_not_of(" \t\n\r");
+    size_t end = s.find_last_not_of(" \t\n\r");
+    if (start == std::string::npos) return ""; // 모두 공백이면 빈 문자열 반환
+    return s.substr(start, end - start + 1);
 }
