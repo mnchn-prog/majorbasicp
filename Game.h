@@ -28,11 +28,12 @@ public:
 		}
 		lastMoveTime = std::chrono::steady_clock::now();
 	}
-
+	int get_visual_width(const string& s);
+	void ShowCommand();
 	string unicodeForPiece(Player color, PieceType p) const;
     //void MovePiece(string startPos, string endPos); // 기획서랑 똑같게 하려면 고쳐야됨
-	Piece* SelectStartPos(File startX, Rank startY);
-	bool SelectEndPos(Piece* currentPiece, File endX, Rank endY, bool& isPosForm);
+	Piece* SelectStartPos(string startPos);
+	bool SelectEndPos(Piece* currentPiece, string endPos, bool& isPosForm);
 	void ShowBoard(bool whiteChecked, bool blackChecked) const;
 	void RefreshBoard(bool& whiteChecked, bool& blackChecked);
 	inline Player GetTrun() const {return turn;}
@@ -49,7 +50,6 @@ public:
 	}
 
 	void StartTimer() { lastMoveTime = std::chrono::steady_clock::now(); }
-	
 	void UpdateTime();
 	string FormatTime(int sec) const;
 	int GetWhiteTime() const {return whiteTimeLeft;}

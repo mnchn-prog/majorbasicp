@@ -25,38 +25,129 @@ string Game::unicodeForPiece(Player color, PieceType p) const{
     return ".";
 }
 
-Piece* Game::SelectStartPos(File startX, Rank startY) {
+int Game::get_visual_width(const string& s) {
+    int width = 0;
+    for (size_t i = 0; i < s.length(); ) {
+        unsigned char c = s[i];
+        if (c < 0x80) { // ASCII 문자 (1바이트)
+            width += 1;
+            i += 1;
+        }
+        else { // 멀티바이트 문자 (한글 등)
+            width += 2;
+            i += 3; // UTF-8 한글은 3바이트
+        }
+    }
+    return width;
+}
+
+void Game::ShowCommand()
+{
+    std::vector<std::pair<std::string, std::string>> data = {
+     {"[a-h][1-8]", "움직일 기물을 선택한다."},
+     {"gg, GG", "상대에게 항복한다"},
+     {"bb, BB", "무승부를 신청한다"},
+     {"tt, TT", "남은 시간을 갱신한다．"},
+     {"qq, QQ", "좌표를 다시 선택한다."},
+    };
+
+    std::string header1 = "명령어";
+    std::string header2 = "해석";
+
+    // 너비 설정
+    int col1_width = 15;
+    int col2_width = 25;
+
+    // --- 표 그리기 시작 ---
+
+    // 1. 상단 테두리
+    std::cout << "┌";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┬";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┐" << std::endl;
+
+    // 2. 헤더 내용
+    std::cout << "│ " << header1;
+    for (int i = 0; i < col1_width - get_visual_width(header1) - 1; ++i) std::cout << " ";
+    std::cout << "│ " << header2;
+    for (int i = 0; i < col2_width - get_visual_width(header2) - 1; ++i) std::cout << " ";
+    std::cout << "│" << std::endl;
+
+    // 3. 헤더와 내용의 구분선
+    std::cout << "├";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┼";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┤" << std::endl;
+
+    // 4. 데이터 내용 (4줄)
+    for (const auto& row : data) {
+        std::cout << "│ " << row.first;
+        for (int i = 0; i < col1_width - get_visual_width(row.first) - 1; ++i) std::cout << " ";
+        std::cout << "│ " << row.second;
+        for (int i = 0; i < col2_width - get_visual_width(row.second) - 1; ++i) std::cout << " ";
+        std::cout << "│" << std::endl;
+    }
+
+    // 5. 하단 테두리
+    std::cout << "└";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┴";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┘" << std::endl;
+
+    return;
+}
+
+Piece* Game::SelectStartPos(string startPos) {
 
     // 입력 유효성 검사
-    if (startX < 0 || startX >= File::Filesize || startY < 0 || startY >= Rank::Ranksize) {
-        cout << "유효하지 않은 출발지점 입력값입니다." << endl; // 여기에 문자열 대신 표준 명령어 출력
+    File startX = static_cast<File>(startPos[0] - 'a');
+    Rank startY = static_cast<Rank>(startPos[1] - '1');
+    if(startPos.length() != 2)
+    {
+        ShowCommand();
         return nullptr;
     }
+
+    if (startX < 0 || startX >= File::Filesize || startY < 0 || startY >= Rank::Ranksize) {
+        ShowCommand();
+        return nullptr;
+    }
+
     Piece* whitePiece = whiteState->getPieceInBoard(startX, startY);
     Piece* blackPiece = blackState->getPieceInBoard(startX, startY);
 
     // 자기 턴의 말인지 확인
     if (turn == Player::white && whitePiece != nullptr) return whitePiece;
     if (turn == Player::black && blackPiece != nullptr) return blackPiece;
-
     else 
     {
         cout << "해당 칸에  선택가능한 기물이 없습니다" << endl;
     }
     return nullptr;
+
 }
 
 // --------------------------------------
 // ② 도착 위치 입력 및 이동 처리
 // --------------------------------------
-bool Game::SelectEndPos(Piece* currentPiece, File endX, Rank endY, bool& isPosForm) {
+bool Game::SelectEndPos(Piece* currentPiece, string endPos, bool& isPosForm) {
     // 입력 유효성 검사
-
-    if (endX < 0 || endX >= File::Filesize || endY < 0 || endY >= Rank::Ranksize) {
-        cout << "⚠️ 유효하지 않은 출발지점 입력값입니다." << endl; // 여기에 문자열 대신 표준 명령어 출력
-        return false;
+    File endX = static_cast<File>(endPos[0] - 'a');
+    Rank endY = static_cast<Rank>(endPos[1] - '1');
+    
+    if(endPos.length() != 2)
+    {
+        ShowCommand();
+        return false; // 좌표형식이 아닐 경우에 다시 주 프롬포트 (isPosForm = false)
     }
 
+    if (endX < 0 || endX >= File::Filesize || endY < 0 || endY >= Rank::Ranksize) {
+        ShowCommand();
+        return false;
+    }
     Piece* capturedPiece = nullptr;
 
     // 이동 시도

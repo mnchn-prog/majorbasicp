@@ -133,21 +133,7 @@ void StartGame(Game& game)
                 system("pause");
                 continue;
             }
-            
-            else if(startPos.length() != 2)
-            {
-                // 문법 오류 결과 표시
-                game.UpdateTime();
-                if(game.checkTimeZero()) return;
-                system("pause");
-                system("cls");
-                game.ShowBoard(whiteChecked, blackChecked);
-                continue;
-            }
-
-            File startX = static_cast<File>(startPos[0] - 'a');
-            Rank startY = static_cast<Rank>(startPos[1] - '1');
-            selectedPiece = game.SelectStartPos(startX, startY);
+            selectedPiece = game.SelectStartPos(startPos);
 
             if(selectedPiece == nullptr) // 입력이 잘못됐을 때 처리
             {
@@ -169,18 +155,9 @@ void StartGame(Game& game)
                 break;
             }
 
-            File endX = static_cast<File>(endPos[0] - 'a');
-            Rank endY = static_cast<Rank>(endPos[1] - '1');
-            if(endPos.length() != 2)
-            {
-                // 문법 오류결과 표시
-                game.UpdateTime();
-                if(game.checkTimeZero()) return;
-                break; // 좌표형식이 아닐 경우에 다시 주 프롬포트
-            }
             bool isPosForm = false;
             game.UpdateTime();
-	        availableEndPos = game.SelectEndPos(selectedPiece, endX, endY, isPosForm);
+	        availableEndPos = game.SelectEndPos(selectedPiece, endPos, isPosForm);
             if(!isPosForm) 
             {
                 game.UpdateTime();
