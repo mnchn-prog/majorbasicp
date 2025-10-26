@@ -2,7 +2,7 @@
 #include "Cell.h"
 #include "GameState.h"
 #include <chrono>
-#include <conio.h>  //_getch() 키입력시 화면전환 
+#include <conio.h>  //_getch() 아무키입력시 화면전환 
 
 class Game
 {
