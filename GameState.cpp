@@ -2,7 +2,7 @@
 
 Piece* GameState::getPieceInBoard(File file, Rank rank) const
 {
-    for(Piece* p : pieces)
+    for (Piece* p : pieces)
     {
         if (p == nullptr) continue;
         Position pos = p->GetPos();
@@ -13,6 +13,6 @@ Piece* GameState::getPieceInBoard(File file, Rank rank) const
 
 GameState::~GameState()
 {
-    for(auto& piece: pieces)
+    for (auto& piece : pieces)
         delete piece;
 }
