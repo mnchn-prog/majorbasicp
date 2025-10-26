@@ -22,9 +22,9 @@ public:
 	{
 		switch(mode)
 		{
-			case GameMode::classical: whiteTimeLeft = blackTimeLeft = 30*60; break;
-        	case GameMode::rapid: whiteTimeLeft = blackTimeLeft = 10*60; break;
-        	case GameMode::blitz: whiteTimeLeft = blackTimeLeft = 3*60; break;
+			case GameMode::classical: whiteTimeLeft = blackTimeLeft = 60*60; break;
+        	case GameMode::rapid: whiteTimeLeft = blackTimeLeft = 30*60; break;
+        	case GameMode::blitz: whiteTimeLeft = blackTimeLeft = 10*60; break;
 		}
 	}
 
@@ -37,7 +37,7 @@ public:
     //void MovePiece(string startPos, string endPos); // 기획서랑 똑같게 하려면 고쳐야됨
 	Piece* SelectStartPos(string startPos);
 	bool SelectEndPos(Piece* currentPiece, string endPos, bool& isPosForm);
-	void ShowBoard(bool whiteChecked, bool blackChecked, bool printCheck = false) const;
+	void ShowBoard(bool whiteChecked, bool blackChecked, bool printCheck = false, bool checkDraw = false) const;
 	bool RefreshBoard(bool& whiteChecked, bool& blackChecked);
 	inline Player GetTrun() const {return turn;}
 

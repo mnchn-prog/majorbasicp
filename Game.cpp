@@ -345,31 +345,56 @@ bool Game::RefreshBoard(bool& whiteChecked, bool& blackChecked)
     return false;
 }
 
-void Game::ShowBoard(bool whiteChecked, bool blackChecked, bool printCheck) const
+void Game::ShowBoard(bool whiteChecked, bool blackChecked, bool printCheck, bool checkDraw) const
 {
-    // 1. 상단 경계선 출력
-    cout << "black | " << FormatTime(blackTimeLeft) << endl;
+    string spaces(12, ' ');
+    if (turn == Player::white && !checkDraw)
+    {
+        cout << " Black" << spaces << ">" << spaces << "White";
+        cout << endl;
+    }
+    else if (turn == Player::black && !checkDraw)
+    {
+        cout << " Black" << spaces << "<" << spaces << "White";
+        cout << endl;
+    }
+    else if(turn == Player::black && checkDraw)
+    {
+        cout << " Black" << spaces << ">" << spaces << "White";
+        cout << endl;
+    }
+    else
+    {
+        cout << " Black" << spaces << "<" << spaces << "White";
+        cout << endl;
+    }
+
+    cout << " " << FormatTime(blackTimeLeft) << spaces << " " << spaces << FormatTime(whiteTimeLeft);
+    cout << endl;
+    
     cout << "   ";
+    // 1. 상단 경계선 출력
     for (int j = 0; j < File::Filesize; j++)
     {
         cout << "____";
     }
     cout << "_" << endl;
-    
+
     for (int i = Rank::Ranksize - 1; i >= 0; i--)
     {
         // 2. 랭크 번호 (행 번호) 출력
-        cout << " " << i + 1 << " "; 
-        
+        cout << " " << i + 1 << " ";
+
         // 3. 기물과 세로 경계선 출력
         for (int j = 0; j < File::Filesize; j++)
         {
             cout << "|"; // 칸의 왼쪽 경계
             if (board[i][j].currentPiece == PieceType::typeNone) {
                 cout << "   "; // 빈 칸은 공백 두 칸
-            } else {
+            }
+            else {
                 // 기물 출력
-                cout << " " << unicodeForPiece(board[i][j].pieceColor, board[i][j].currentPiece) << " "; 
+                cout << " " << unicodeForPiece(board[i][j].pieceColor, board[i][j].currentPiece) << " ";
             }
         }
         cout << "|"; // 맨 오른쪽 경계
@@ -383,7 +408,7 @@ void Game::ShowBoard(bool whiteChecked, bool blackChecked, bool printCheck) cons
         }
         cout << "|" << endl;
     }
-    
+
     // 5. 파일 문자 (열 번호) 출력
     cout << "    ";
     for (int i = 0; i < File::Filesize; i++)
@@ -391,18 +416,17 @@ void Game::ShowBoard(bool whiteChecked, bool blackChecked, bool printCheck) cons
         cout << " " << static_cast<char>(i + 'a') << "  "; // 파일 문자 사이 간격 조정
     }
     cout << endl;
-    cout << "white | " << FormatTime(whiteTimeLeft) << endl;
 
     if(printCheck)
     {
         if(whiteChecked)
         {
-            cout << "백 킹이 체크 상태입니다" << endl;
+            cout << "백의 체크입니다" << endl;
             this_thread::sleep_for(std::chrono::seconds(5));
         }
         if(blackChecked)
         {
-            cout << "흑 킹이 체크 상태입니다" << endl; // 5초간?
+            cout << "흑의 체크입니다" << endl; // 5초간?
             this_thread::sleep_for(std::chrono::seconds(5));
         }
     }

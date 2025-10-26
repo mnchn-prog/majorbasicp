@@ -83,22 +83,46 @@ int main()
         GameState w(whitePieces, Player::white);
         GameState b(blackPieces, Player::black);
 
-        cout << "=========================================\n";
-        cout << "||                                     ||\n";
-        cout << "||             CHESS GAME              ||\n";
-        cout << "||                                     ||\n";
-        cout << "||   1. 게임 시작                      ||\n";
-        cout << "||   2. 게임 모드                      ||\n";
-        cout << "||   3. 게임 규칙                      ||\n";
-        cout << "||   4. 종료                           ||\n";
-        cout << "||                                     ||\n";
-        cout << "=========================================\n";
-        cout << ">> 선택하세요: ";
-        int num; cin >> num;
+        string num; 
+        int inum;
+        while(true)
+        {
+
         
+            cout << "=========================================\n";
+            cout << "||                                     ||\n";
+            cout << "||             CHESS GAME              ||\n";
+            cout << "||                                     ||\n";
+            cout << "||   1. 게임 시작                      ||\n";
+            cout << "||   2. 게임 모드                      ||\n";
+            cout << "||   3. 게임 규칙                      ||\n";
+            cout << "||   4. 종료                           ||\n";
+            cout << "||                                     ||\n";
+            cout << "=========================================\n";
+            cout << ">> 선택하세요: ";
+            getline(cin, num);
+            try
+            {
+                inum = stoi(num);
+            }
+            catch(const exception& e)
+            {  
+                cout << "오류: 불가능한 입력입니다. 1부터 4까지의 숫자 중 하나를 입력하세요.\n";
+                system("pause");
+                system("cls");
+                continue;
+            }
+            if(1 > inum || inum > 4)
+            {
+                cout << "오류: 불가능한 입력입니다. 1부터 4까지의 숫자 중 하나를 입력하세요.\n";
+                system("pause");
+                system("cls");
+            }
+            else break;
+        }
         GameMode gameMode = GameMode::classical;
 	    Game game(board, &w, &b, Player::white, gameMode);
-        switch(num)
+        switch(inum)
         {
 	        case 1:
                 StartGame(game);
@@ -125,7 +149,7 @@ int main()
 
 GameMode ChoiceGameMode()
 {
-    cout << "1. 클래식(30분) 2. 래피드(10분) 3. 블리츠(3분) \n번호를 입력하세요: ";
+    cout << "1. 클래시컬 2. 래피드 3. 블리츠 \n>>번호를 입력하세요: ";
     int n; cin >> n;
     switch(n)
     {
@@ -149,13 +173,15 @@ void StartGame(Game& game)
 	    system("cls");
         bool whiteChecked = false, blackChecked = false;
         if(game.RefreshBoard(whiteChecked, blackChecked)) { system("pause"); return; }
-        game.ShowBoard(whiteChecked, blackChecked, printCheck );
+        
 
 	    string startPos, endPos;
         Piece* selectedPiece = nullptr;
         while(selectedPiece == nullptr)
         {   
-	        cout<< " | 움직일 기물 위치 입력: ";
+            system("cls");
+            game.ShowBoard(whiteChecked, blackChecked, printCheck);
+	        cout<< "움직일 기물 위치 입력: ";
 	        cin >> startPos;
             
             // ⬇️ tt 또는 TT 입력 시 현재 시간 출력
@@ -175,7 +201,7 @@ void StartGame(Game& game)
                 cin >> answer;
                 if(answer == "gg" || answer == "GG")
                 {
-                    cout << "🏳️ 항복!" << endl;
+                    cout << (game.GetTrun() == Player::white ? "white" : "black") << "님이 항복했습니다." << endl;
                     cout << "메인메뉴로 돌아가려면 Enter키를 누르세요..." << endl;
                     system("pause");
                     system("cls");
@@ -192,7 +218,8 @@ void StartGame(Game& game)
             if (startPos == "bb" || startPos == "BB")
             {
                 system("cls");
-                game.ShowBoard(whiteChecked, blackChecked, /*여기에 턴, */false);
+                
+                game.ShowBoard(whiteChecked, blackChecked, false, true);
                 Player currentPlayer = game.GetTrun() == 0 ? Player::white : Player::black;
 
                 if (!drawOffered)
