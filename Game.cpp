@@ -82,76 +82,7 @@ bool Game::SelectEndPos(Piece* currentPiece, File endX, Rank endY, bool& isPosFo
         return false;
     }
 }
-/*
-void Game::MovePiece(string startPos, string endPos)
-{
-    GameState* curState = turn == Player::white ? whiteState : blackState;
 
-    // 턴 전환 로직은 말을 움직일 수 있는지 확인 후, MovePos가 성공했을 때만 실행되어야 하므로 아래에서 수정하겠습니다.
-    // turn = (turn == Player::white ? Player::black : Player::white);
-
-    //좌표 유효성 검사
-    if (startPos[0] < 'a' || startPos[0] > 'h' || startPos[1] < '1' || startPos[1] > '8')
-    {
-        cout << "유효하지 않은 출발지점 입력값입니다" << endl;
-        return;
-    }
-    File startX = static_cast<File>(startPos[0] - 'a');
-    Rank startY = static_cast<Rank>(startPos[1] - '1');
-
-    // 턴 소유권 검사를 위해 양쪽 GameState에서 기물을 찾습니다.
-    Piece* whitePiece = whiteState->getPieceInBoard(startX, startY);
-    Piece* blackPiece = blackState->getPieceInBoard(startX, startY);
-    Piece* currentPiece = nullptr;
-
-    if (whitePiece != nullptr && turn == Player::white) {
-        currentPiece = whitePiece;
-    } else if (blackPiece != nullptr && turn == Player::black) {
-        currentPiece = blackPiece;
-    }
-
-    if (currentPiece == nullptr)
-    {
-        // 턴은 맞는데 말이 없는 경우
-        if ((whitePiece != nullptr || blackPiece != nullptr) &&
-            (whitePiece != nullptr ? turn != Player::white : turn != Player::black)) {
-            cout << (turn == Player::white ? "흑색 말" : "흰색 말") << "은 움직일 수 없습니다." << endl;
-        } else {
-            cout << "입력한 좌표에 기물이 없습니다." << endl;
-        }
-        system("pause");
-        return;
-    }
-
-
-    // 문제 없으면
-    if (endPos[0] < 'a' || endPos[0] > 'h' || endPos[1] < '1' || endPos[1] > '8')
-    {
-        cout << "유효하지 않은 도착지점 입력값입니다" << endl;
-        system("pause");
-
-        return;
-    }
-
-    File endX = static_cast<File>(endPos[0] - 'a');
-    Rank endY = static_cast<Rank>(endPos[1] - '1');
-    // 기물 잡기
-    Piece* capturedPiece = nullptr;
-    // 기물 이동 시도
-    if(currentPiece->MovePos(endX, endY, board, capturedPiece))
-    {
-        turn = (turn == Player::white ? Player::black : Player::white);
-        if(capturedPiece != nullptr)
-        {
-            RemovePiece(capturedPiece, turn); // white면 black이 잡히니까 턴 넘긴다음에 하면 똑같음
-        }
-    }
-    else
-    {
-        // 다시 입력받기 근데 구조 바꿔야함. 기획서대로면 startPos 먼저 받고 검증, 문제 없으면 endPos 받기
-    }
-}
-*/
 void Game::RemovePiece(Piece* capturedPiece, Player color)
 {
     GameState* curState = color == Player::white ? whiteState : blackState;
@@ -251,9 +182,22 @@ bool Game::RefreshBoard()
 }
 void Game::ShowBoard() const
 {
-    // 1. 상단 경계선 출력
-    cout << "black | " << FormatTime(blackTimeLeft) << endl;
+    string spaces(12, ' ');
+    if (turn == Player::white)
+    {
+        cout << " Black" << spaces << ">" << spaces << "White";
+        cout << endl;
+    }
+    else
+    {
+        cout << " Black" << spaces << "<" << spaces << "White";
+        cout << endl;
+    }
+    cout << " " << FormatTime(whiteTimeLeft) << spaces << " " << spaces << FormatTime(blackTimeLeft);
+    cout << endl;
+    
     cout << "   ";
+    // 1. 상단 경계선 출력
     for (int j = 0; j < File::Filesize; j++)
     {
         cout << "____";
@@ -296,7 +240,6 @@ void Game::ShowBoard() const
         cout << " " << static_cast<char>(i + 'a') << "  "; // 파일 문자 사이 간격 조정
     }
     cout << endl;
-    cout << "white | " << FormatTime(whiteTimeLeft) << endl;
 }
 
 void Game::SetGameMode(GameMode gm) {
@@ -397,7 +340,7 @@ void Game::ShowCommand()
     std::cout << "┴";
     for (int i = 0; i < col2_width; ++i) std::cout << "─";
     std::cout << "┘" << std::endl;
-    _getch();
+    system("pause");
 
     return;
 }
