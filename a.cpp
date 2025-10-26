@@ -39,7 +39,7 @@ int main()
     SetConsoleOutputCP(CP_UTF8);
 #endif
     // 3. 게임 시작
-
+    GameMode gameMode = GameMode::classical;
     while (true)
     {
         // 1. 기물 초기 배치 및 목록 생성
@@ -83,7 +83,7 @@ int main()
 
         string num;
         int inum;
-        GameMode gameMode = GameMode::classical;
+
         
         while (true)
         {
@@ -189,8 +189,6 @@ GameMode ChoiceGameMode()
             case 3:
                 cout << "블리츠 모드로 설정되었습니다." << endl;
                 return GameMode::blitz;
-                
-                return GameMode::classical;
             }
         }
     }
@@ -199,12 +197,11 @@ GameMode ChoiceGameMode()
 void StartGame(Game &game)
 {
     Player drawOfferBy = Player::playerNone;
-    bool printCheck = true;
+    bool printCheck = true, printMove = false;
     game.StartTimer();
     while (true)
     {
         bool drawOffered = false;
-
         system("cls");
         bool whiteChecked = false, blackChecked = false;
         if (game.RefreshBoard(whiteChecked, blackChecked))
@@ -218,7 +215,12 @@ void StartGame(Game &game)
         while (selectedPiece == nullptr)
         {
             system("cls");
-            game.ShowBoard(whiteChecked, blackChecked, printCheck);
+            game.ShowBoard(whiteChecked, blackChecked, printMove, printCheck);
+            if(whiteChecked || blackChecked || printMove)
+            {
+                system("cls");
+                game.ShowBoard(whiteChecked, blackChecked);
+            }
             cout << "움직일 기물 위치 입력: ";
             cin >> startPos;
 
@@ -230,6 +232,8 @@ void StartGame(Game &game)
                 system("cls");
                 game.ShowBoard(whiteChecked, blackChecked);
                 system("pause");
+                printCheck = false;
+                printMove = false;
                 continue;
             }
 
@@ -238,7 +242,9 @@ void StartGame(Game &game)
             {
                 cout << "정말로 항복하시겠습니까? (항복하려면 \"gg\" 또는 \"GG\"를 입력하세요.): ";
                 string answer;
-                cin >> answer;
+                cin.clear(); // 스트림 상태 플래그 초기화
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                getline(cin, answer);
                 if (answer == "gg" || answer == "GG")
                 {
                     cout << (game.GetTrun() == Player::white ? "white" : "black") << "님이 항복했습니다." << endl;
@@ -249,7 +255,8 @@ void StartGame(Game &game)
                 }
                 else
                 {
-                    cout << "항복 취소" << endl;
+                    printCheck = false;
+                    printMove = false;
                     continue;
                 }
             }
@@ -259,7 +266,7 @@ void StartGame(Game &game)
             {
                 system("cls");
 
-                game.ShowBoard(whiteChecked, blackChecked, false, true);
+                game.ShowBoard(whiteChecked, blackChecked, false, false, true);
                 Player currentPlayer = game.GetTrun() == 0 ? Player::white : Player::black;
 
                 if (!drawOffered)
@@ -269,7 +276,9 @@ void StartGame(Game &game)
                     cout << "무승부를 제안했습니다. 수락하려면 BB 또는 bb 입력하세요.\n";
 
                     string answer;
-                    cin >> answer;
+                    cin.clear(); // 스트림 상태 플래그 초기화
+                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    getline(cin, answer);
                     if (answer == "bb" || answer == "BB")
                     {
                         cout << "무승부가 합의되었습니다, 게임 종료" << endl;
@@ -281,8 +290,8 @@ void StartGame(Game &game)
 
                     else
                     {
-                        cout << "무승부가 거절되었습니다." << endl;
-                        system("pause");
+                        printCheck = false;
+                        printMove = false;
                         continue;
                     }
                 }
@@ -302,7 +311,8 @@ void StartGame(Game &game)
                 system("pause");
                 system("cls");
                 game.UpdateTime();
-                game.ShowBoard(whiteChecked, blackChecked);
+                printCheck = false;
+                printMove = false;
             }
         }
 
@@ -325,15 +335,15 @@ void StartGame(Game &game)
                 if (game.checkTimeZero())
                     return;
                 printCheck = false;
+                printMove = false;
                 break; // 좌표 형식 자체가 아니면 다시 주 프롬포트
             }
             else
             {
                 printCheck = true;
+                printMove = true;
             }
         }
-        if (game.checkTimeZero())
-            return;
         system("pause");
     }
 }

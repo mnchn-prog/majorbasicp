@@ -18,7 +18,7 @@ private:
 	int blackTimeLeft;
 
 public:
-	Game(Cell (&board)[8][8], GameState* ws, GameState* bs, Player turn, GameMode gm = GameMode::classical) : board(board), whiteState(ws), blackState(bs), turn(turn), mode(gm) 
+	Game(Cell (&board)[8][8], GameState* ws, GameState* bs, Player turn, GameMode gm) : board(board), whiteState(ws), blackState(bs), turn(turn), mode(gm) 
 	{
 		switch(mode)
 		{
@@ -37,20 +37,9 @@ public:
     //void MovePiece(string startPos, string endPos); // 기획서랑 똑같게 하려면 고쳐야됨
 	Piece* SelectStartPos(string startPos);
 	bool SelectEndPos(Piece* currentPiece, string endPos, bool& isPosForm);
-	void ShowBoard(bool whiteChecked, bool blackChecked, bool printCheck = false, bool checkDraw = false) const;
+	void ShowBoard(bool whiteChecked, bool blackChecked, bool printMoveResult = false, bool printCheck = false, bool checkDraw = false) const;
 	bool RefreshBoard(bool& whiteChecked, bool& blackChecked);
 	inline Player GetTrun() const {return turn;}
-
-	void SetGameMode(GameMode gm) 
-	{ 
-		mode = gm; 
-		switch(mode)
-		{
-			case GameMode::classical: whiteTimeLeft = blackTimeLeft = 30*60; break;
-        	case GameMode::rapid: whiteTimeLeft = blackTimeLeft = 10*60; break;
-        	case GameMode::blitz: whiteTimeLeft = blackTimeLeft = 3*60; break;
-		}
-	}
 
 	void StartTimer() { lastMoveTime = std::chrono::steady_clock::now(); }
 	void UpdateTime();

@@ -168,7 +168,7 @@ bool Game::SelectEndPos(Piece* currentPiece, string endPos, bool& isPosForm) {
 
         // 턴 전환
         turn = (turn == Player::white ? Player::black : Player::white);
-        cout << "기물이 이동되었습니다." << endl;
+        
         isPosForm = true;
         // 체크입니다 5초간 출력, 킹이 잡혔다면 게임결과 출력
         return true;
@@ -272,6 +272,10 @@ void Game::RemovePiece(Piece* capturedPiece, Player color)
 
 bool Game::RefreshBoard(bool& whiteChecked, bool& blackChecked)
 {
+    if(checkTimeZero())
+    {
+        return true;
+    }
     Position wKingPos, bKingPos;
     wKingPos.x = bKingPos.x = File::Filesize;
 	wKingPos.y = bKingPos.y = Rank::Ranksize;
@@ -314,7 +318,7 @@ bool Game::RefreshBoard(bool& whiteChecked, bool& blackChecked)
         cout << "게임 결과 출력 (백 승)" << endl;
         return true;
     }
-
+    
     vector<Piece*> whitePieces = whiteState->GetPieces();
     vector<Piece*> blackPieces = blackState->GetPieces();
 
@@ -345,7 +349,7 @@ bool Game::RefreshBoard(bool& whiteChecked, bool& blackChecked)
     return false;
 }
 
-void Game::ShowBoard(bool whiteChecked, bool blackChecked, bool printCheck, bool checkDraw) const
+void Game::ShowBoard(bool whiteChecked, bool blackChecked, bool printMoveResult, bool printCheck, bool checkDraw) const
 {
     string spaces(12, ' ');
     if (turn == Player::white && !checkDraw)
@@ -417,19 +421,26 @@ void Game::ShowBoard(bool whiteChecked, bool blackChecked, bool printCheck, bool
     }
     cout << endl;
 
+    if(printMoveResult)
+    {
+        cout << "기물이 이동되었습니다." << endl;
+        this_thread::sleep_for(std::chrono::seconds(1));
+    }
+    
     if(printCheck)
     {
         if(whiteChecked)
         {
             cout << "백의 체크입니다" << endl;
-            this_thread::sleep_for(std::chrono::seconds(5));
+            this_thread::sleep_for(std::chrono::seconds(4));
         }
         if(blackChecked)
         {
             cout << "흑의 체크입니다" << endl; // 5초간?
-            this_thread::sleep_for(std::chrono::seconds(5));
+            this_thread::sleep_for(std::chrono::seconds(4));
         }
     }
+
 }
 
 void Game::UpdateTime()
