@@ -3,22 +3,22 @@
 
 using namespace std;
 
-string Game::unicodeForPiece(Player color, PieceType p) const{
+string Game::unicodeForPiece(Player color, PieceType p) const {
 
-    if(color == Player::black)
+    if (color == Player::black)
     {
-        switch(p){
-            case PieceType::typeKing: return "♚"; case PieceType::typeQueen: return "♛"; case PieceType::typeRook: return "♜";
-            case PieceType::typeBishop: return "♝"; case PieceType::typeKnight: return "♞"; case PieceType::typePawn: return "♟";
-            default: return ".";
+        switch (p) {
+        case PieceType::typeKing: return "♚"; case PieceType::typeQueen: return "♛"; case PieceType::typeRook: return "♜";
+        case PieceType::typeBishop: return "♝"; case PieceType::typeKnight: return "♞"; case PieceType::typePawn: return "♟";
+        default: return ".";
         }
     }
     else
     {
-        switch(p){
-            case PieceType::typeKing: return "♔"; case PieceType::typeQueen: return "♕"; case PieceType::typeRook: return "♖";
-            case PieceType::typeBishop: return "♗"; case PieceType::typeKnight: return "♘"; case PieceType::typePawn: return "♙";
-            default: return ".";
+        switch (p) {
+        case PieceType::typeKing: return "♔"; case PieceType::typeQueen: return "♕"; case PieceType::typeRook: return "♖";
+        case PieceType::typeBishop: return "♗"; case PieceType::typeKnight: return "♘"; case PieceType::typePawn: return "♙";
+        default: return ".";
         }
     }
     // ⚠️ 함수가 string을 반환해야 하지만, switch문 외부에서 반환하지 않을 수 있어 return을 추가합니다.
@@ -39,7 +39,7 @@ Piece* Game::SelectStartPos(File startX, Rank startY) {
     if (turn == Player::white && whitePiece != nullptr) return whitePiece;
     if (turn == Player::black && blackPiece != nullptr) return blackPiece;
 
-    else 
+    else
     {
         cout << "해당 칸에  선택가능한 기물이 없습니다" << endl;
     }
@@ -60,10 +60,10 @@ bool Game::SelectEndPos(Piece* currentPiece, File endX, Rank endY, bool& isPosFo
     Piece* capturedPiece = nullptr;
 
     // 이동 시도
-    if (currentPiece->MovePos(endX, endY, board, capturedPiece)) 
+    if (currentPiece->MovePos(endX, endY, board, capturedPiece))
     {
         // 말이 잡혔다면 제거
-        if (capturedPiece != nullptr) 
+        if (capturedPiece != nullptr)
         {
             RemovePiece(capturedPiece, turn == Player::white ? Player::black : Player::white);
         }
@@ -73,9 +73,9 @@ bool Game::SelectEndPos(Piece* currentPiece, File endX, Rank endY, bool& isPosFo
         cout << "기물이 이동되었습니다." << endl;
         // 체크입니다 5초간 출력, 킹이 잡혔다면 게임결과 출력
         return true;
-    } 
-    
-    else 
+    }
+
+    else
     {
         cout << "잘못된 	행마입니다." << endl;
         isPosForm = true;
@@ -85,20 +85,20 @@ bool Game::SelectEndPos(Piece* currentPiece, File endX, Rank endY, bool& isPosFo
 /*
 void Game::MovePiece(string startPos, string endPos)
 {
-	GameState* curState = turn == Player::white ? whiteState : blackState;
-	
-    // 턴 전환 로직은 말을 움직일 수 있는지 확인 후, MovePos가 성공했을 때만 실행되어야 하므로 아래에서 수정하겠습니다.
-	// turn = (turn == Player::white ? Player::black : Player::white);
+    GameState* curState = turn == Player::white ? whiteState : blackState;
 
-	//좌표 유효성 검사
-	if (startPos[0] < 'a' || startPos[0] > 'h' || startPos[1] < '1' || startPos[1] > '8')
-	{
-		cout << "유효하지 않은 출발지점 입력값입니다" << endl;
-		return;
-	}
-	File startX = static_cast<File>(startPos[0] - 'a');
-	Rank startY = static_cast<Rank>(startPos[1] - '1');
-    
+    // 턴 전환 로직은 말을 움직일 수 있는지 확인 후, MovePos가 성공했을 때만 실행되어야 하므로 아래에서 수정하겠습니다.
+    // turn = (turn == Player::white ? Player::black : Player::white);
+
+    //좌표 유효성 검사
+    if (startPos[0] < 'a' || startPos[0] > 'h' || startPos[1] < '1' || startPos[1] > '8')
+    {
+        cout << "유효하지 않은 출발지점 입력값입니다" << endl;
+        return;
+    }
+    File startX = static_cast<File>(startPos[0] - 'a');
+    Rank startY = static_cast<Rank>(startPos[1] - '1');
+
     // 턴 소유권 검사를 위해 양쪽 GameState에서 기물을 찾습니다.
     Piece* whitePiece = whiteState->getPieceInBoard(startX, startY);
     Piece* blackPiece = blackState->getPieceInBoard(startX, startY);
@@ -109,36 +109,36 @@ void Game::MovePiece(string startPos, string endPos)
     } else if (blackPiece != nullptr && turn == Player::black) {
         currentPiece = blackPiece;
     }
-    
+
     if (currentPiece == nullptr)
-	{
+    {
         // 턴은 맞는데 말이 없는 경우
-        if ((whitePiece != nullptr || blackPiece != nullptr) && 
+        if ((whitePiece != nullptr || blackPiece != nullptr) &&
             (whitePiece != nullptr ? turn != Player::white : turn != Player::black)) {
             cout << (turn == Player::white ? "흑색 말" : "흰색 말") << "은 움직일 수 없습니다." << endl;
         } else {
             cout << "입력한 좌표에 기물이 없습니다." << endl;
         }
-		system("pause");
+        system("pause");
         return;
-	}
+    }
 
 
-	// 문제 없으면 
-	if (endPos[0] < 'a' || endPos[0] > 'h' || endPos[1] < '1' || endPos[1] > '8')
-	{
-		cout << "유효하지 않은 도착지점 입력값입니다" << endl;
-		system("pause");
+    // 문제 없으면
+    if (endPos[0] < 'a' || endPos[0] > 'h' || endPos[1] < '1' || endPos[1] > '8')
+    {
+        cout << "유효하지 않은 도착지점 입력값입니다" << endl;
+        system("pause");
 
-		return;
-	}
+        return;
+    }
 
-	File endX = static_cast<File>(endPos[0] - 'a');
-	Rank endY = static_cast<Rank>(endPos[1] - '1');
-	// 기물 잡기
+    File endX = static_cast<File>(endPos[0] - 'a');
+    Rank endY = static_cast<Rank>(endPos[1] - '1');
+    // 기물 잡기
     Piece* capturedPiece = nullptr;
     // 기물 이동 시도
-	if(currentPiece->MovePos(endX, endY, board, capturedPiece))
+    if(currentPiece->MovePos(endX, endY, board, capturedPiece))
     {
         turn = (turn == Player::white ? Player::black : Player::white);
         if(capturedPiece != nullptr)
@@ -155,10 +155,10 @@ void Game::MovePiece(string startPos, string endPos)
 void Game::RemovePiece(Piece* capturedPiece, Player color)
 {
     GameState* curState = color == Player::white ? whiteState : blackState;
-    vector<Piece*>& p = curState->GetPieces(); 
+    vector<Piece*>& p = curState->GetPieces();
 
     // 1. std::remove_if로 잡힌 기물 포인터의 위치를 끝으로 이동시킴
-    auto new_end = std::remove_if(p.begin(), p.end(), 
+    auto new_end = std::remove_if(p.begin(), p.end(),
         [capturedPiece](Piece* currentPiece) {
             return currentPiece == capturedPiece;
         });
@@ -168,79 +168,87 @@ void Game::RemovePiece(Piece* capturedPiece, Player color)
         p.erase(new_end, p.end());
     }
 
-    delete capturedPiece; 
+    delete capturedPiece;
 }
 
-void Game::RefreshBoard()
+bool Game::RefreshBoard()
 {
     Position wKingPos, bKingPos;
     wKingPos.x = bKingPos.x = File::Filesize;
-	wKingPos.y = bKingPos.y = Rank::Ranksize;
+    wKingPos.y = bKingPos.y = Rank::Ranksize;
     for (int i = 0; i < Rank::Ranksize; i++)
-	{
-		for (int j = 0; j < File::Filesize; j++)
-		{
-			Piece* whitePiece = whiteState->getPieceInBoard(static_cast<File>(j), static_cast<Rank>(i));
-			Piece* blackPiece = blackState->getPieceInBoard(static_cast<File>(j), static_cast<Rank>(i));
-			if (whitePiece != nullptr) 
-			{
-				board[i][j] = Cell(Player::white, whitePiece->GetType(), false, false, whitePiece);
-                if(whitePiece->GetType() == PieceType::typeKing)
+    {
+        for (int j = 0; j < File::Filesize; j++)
+        {
+            Piece* whitePiece = whiteState->getPieceInBoard(static_cast<File>(j), static_cast<Rank>(i));
+            Piece* blackPiece = blackState->getPieceInBoard(static_cast<File>(j), static_cast<Rank>(i));
+            if (whitePiece != nullptr)
+            {
+                board[i][j] = Cell(Player::white, whitePiece->GetType(), false, false, whitePiece);
+                if (whitePiece->GetType() == PieceType::typeKing)
                 {
                     wKingPos = whitePiece->GetPos();
                 }
             }
-			else if (blackPiece != nullptr) 
-			{
-				board[i][j] = Cell(Player::black, blackPiece->GetType(), false, false, blackPiece);
-                if(blackPiece->GetType() == PieceType::typeKing)
+            else if (blackPiece != nullptr)
+            {
+                board[i][j] = Cell(Player::black, blackPiece->GetType(), false, false, blackPiece);
+                if (blackPiece->GetType() == PieceType::typeKing)
                 {
                     bKingPos = blackPiece->GetPos();
                 }
             }
-			else 
-			{
-				board[i][j] = Cell(Player::playerNone, PieceType::typeNone, false, false, nullptr);
-			}
-		}
-	}
-	if(wKingPos.x == 8 && wKingPos.y == 8)
+            else
+            {
+                board[i][j] = Cell(Player::playerNone, PieceType::typeNone, false, false, nullptr);
+            }
+        }
+    }
+    if (wKingPos.x == 8 && wKingPos.y == 8)
     {
         //게임 결과 출력 (흑 승)
+        system("cls");
+        cout << "축하합니다. 흑의 승리입니다." << endl;
+        system("pause");
+        return false;
     }
-    else if(bKingPos.x == 8 && bKingPos.y == 8)
+    else if (bKingPos.x == 8 && bKingPos.y == 8)
     {
+        system("cls");
+        cout << "축하합니다. 백의 승리입니다." << endl;
+        system("pause");
+        return false;
         //게임 결과 출력 (백 승)
     }
 
     vector<Piece*> whitePieces = whiteState->GetPieces();
     vector<Piece*> blackPieces = blackState->GetPieces();
 
-    for(Piece* p : whitePieces)
+    for (Piece* p : whitePieces)
     {
-        for(auto pos : p->CheckAttackCell(board))
+        for (auto pos : p->CheckAttackCell(board))
         {
             board[pos.second][pos.first].AttckedByWhite = true;
         }
     }
 
-    for(Piece* p : blackPieces)
+    for (Piece* p : blackPieces)
     {
-        for(auto pos : p->CheckAttackCell(board))
+        for (auto pos : p->CheckAttackCell(board))
         {
             board[pos.second][pos.first].AttackedByBlack = true;
         }
     }
-    if(board[wKingPos.x][wKingPos.y].AttackedByBlack)
+    if (board[wKingPos.x][wKingPos.y].AttackedByBlack)
     {
         cout << "체크입니다" << endl; // 5초간..? 스레드 슬립?
     }
-    if(board[bKingPos.x][bKingPos.y].AttckedByWhite)
+    if (board[bKingPos.x][bKingPos.y].AttckedByWhite)
     {
         cout << "체크입니다" << endl; // 5초간?
     }
+    return true;
 }
-
 void Game::ShowBoard() const
 {
     // 1. 상단 경계선 출력
@@ -251,21 +259,22 @@ void Game::ShowBoard() const
         cout << "____";
     }
     cout << "_" << endl;
-    
+
     for (int i = Rank::Ranksize - 1; i >= 0; i--)
     {
         // 2. 랭크 번호 (행 번호) 출력
-        cout << " " << i + 1 << " "; 
-        
+        cout << " " << i + 1 << " ";
+
         // 3. 기물과 세로 경계선 출력
         for (int j = 0; j < File::Filesize; j++)
         {
             cout << "|"; // 칸의 왼쪽 경계
             if (board[i][j].currentPiece == PieceType::typeNone) {
                 cout << "   "; // 빈 칸은 공백 두 칸
-            } else {
+            }
+            else {
                 // 기물 출력
-                cout << " " << unicodeForPiece(board[i][j].pieceColor, board[i][j].currentPiece) << " "; 
+                cout << " " << unicodeForPiece(board[i][j].pieceColor, board[i][j].currentPiece) << " ";
             }
         }
         cout << "|"; // 맨 오른쪽 경계
@@ -279,7 +288,7 @@ void Game::ShowBoard() const
         }
         cout << "|" << endl;
     }
-    
+
     // 5. 파일 문자 (열 번호) 출력
     cout << "    ";
     for (int i = 0; i < File::Filesize; i++)
@@ -301,20 +310,20 @@ void Game::SetGameMode(GameMode gm) {
 }
 void Game::UpdateTime()
 {
-   auto now = std::chrono::steady_clock::now();
-   int elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - lastMoveTime).count();
-   if(turn == Player::black) whiteTimeLeft -= elapsed;
-   else blackTimeLeft -= elapsed;
-   lastMoveTime = now;
+    auto now = std::chrono::steady_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - lastMoveTime).count();
+    if (turn == Player::black) whiteTimeLeft -= elapsed;
+    else blackTimeLeft -= elapsed;
+    lastMoveTime = now;
 }
 
 string Game::FormatTime(int sec) const
 {
-   int m = sec / 60;
-   int s = sec % 60;
-   char buf[6];
-   sprintf(buf, "%02d:%02d", m, s);
-   return string(buf);
+    int m = sec / 60;
+    int s = sec % 60;
+    char buf[6];
+    sprintf(buf, "%02d:%02d", m, s);
+    return string(buf);
 }
 
 int Game::get_visual_width(const string& s) {
