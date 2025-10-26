@@ -2,7 +2,7 @@
 
 bool Piece::MovePos(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize], Piece*& capturedPiece)
 {
-	if (!isMoveable(x, y, board)) { system("pause"); return false; }
+	if (!isMoveable(x, y, board)) { return false; }
 
 	if(board[y][x].currentPiece != PieceType::typeNone)
 	{
