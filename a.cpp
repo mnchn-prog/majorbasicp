@@ -2,7 +2,7 @@
 #include <vector> // GameState 초기화를 위해 필요
 #include <algorithm> // GameState 초기화를 위해 필요
 #include <iterator> // GameState 초기화를 위해 필요
-#include <utility>  // ShowRule pair()
+#include <utility>  // 게임설명서 출력을 위해 필요
 
 
 // ⚠️ Windows API와의 충돌 방지 매크로
@@ -80,34 +80,36 @@ int main()
     GameState b(blackPieces, Player::black);
 
     // 3. 게임 시작
+    while (true) {
+        std::cout << "=========================================\n";
+        std::cout << "||                                     ||\n";
+        std::cout << "||             CHESS GAME              ||\n";
+        std::cout << "||                                     ||\n";
+        std::cout << "||   1. 게임 시작                      ||\n";
+        std::cout << "||   2. 게임 모드                      ||\n";
+        std::cout << "||   3. 게임 규칙                      ||\n";
+        std::cout << "||   4. 종료                           ||\n";
+        std::cout << "||                                     ||\n";
+        std::cout << "=========================================\n";
+        std::cout << ">> 선택하세요: ";
+        int num; cin >> num;
+        GameMode gameMode = GameMode::classical;
+	    Game game(board, &w, &b, Player::white, gameMode);
+        switch(num)
+        {
+	        case 1:
+                StartGame(game);
+                break;
+            case 2:
+                gameMode = ChoiceGameMode();
+                game.SetGameMode(gameMode);
+                break;
+            case 3:
+                ShowRule();
+            case 4:
+                return 0;
+        }
 
-    std::cout << "=========================================\n";
-    std::cout << "||                                     ||\n";
-    std::cout << "||             CHESS GAME              ||\n";
-    std::cout << "||                                     ||\n";
-    std::cout << "||   1. 게임 시작                      ||\n";
-    std::cout << "||   2. 게임 모드                      ||\n";
-    std::cout << "||   3. 게임 규칙                      ||\n";
-    std::cout << "||   4. 종료                           ||\n";
-    std::cout << "||                                     ||\n";
-    std::cout << "=========================================\n";
-    std::cout << ">> 선택하세요: ";
-    int num; cin >> num;
-    GameMode gameMode = GameMode::classical;
-	Game game(board, &w, &b, Player::white, gameMode);
-    switch(num)
-    {
-	    case 1:
-            StartGame(game);
-            break;
-        case 2:
-            gameMode = ChoiceGameMode();
-            game.SetGameMode(gameMode);
-            break;
-        case 3:
-            ShowRule();
-        case 4:
-            return 0;
     }
 }
 
@@ -117,9 +119,18 @@ GameMode ChoiceGameMode()
     int n; cin >> n;
     switch(n)
     {
-        case 1: return GameMode::classical;
-        case 2: return GameMode::rapid;
-        case 3: return GameMode::blitz;
+        case 1: 
+            cout << "클래시컬 모드" << endl;
+            system("pause");
+            return GameMode::classical;
+        case 2: 
+            cout << "래피드 모드" << endl;
+            system("pause");
+            return GameMode::rapid;
+        case 3: 
+            cout << "블리츠 모드" << endl;
+            system("pause");
+            return GameMode::blitz;
         return GameMode::classical;
     }
 }
@@ -128,7 +139,7 @@ void StartGame(Game game)
 {
     while (true)
 	{
-        system("pause");
+//        system("pause");
 	    system("cls");
 
         game.RefreshBoard();
