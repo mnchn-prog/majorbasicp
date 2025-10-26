@@ -284,6 +284,6 @@ void ShowRule()
     for (int i = 0; i < col2_width; ++i) std::cout << "─";
     std::cout << "┘" << std::endl;
 
-    _getch();
+    system("pause");
     return;
 }
