@@ -18,7 +18,7 @@ private:
 	int blackTimeLeft;
 
 public:
-	Game(Cell (&board)[8][8], GameState* ws, GameState* bs, Player turn, GameMode gm = GameMode::classical) : board(board), whiteState(ws), blackState(bs), turn(turn) 
+	Game(Cell (&board)[8][8], GameState* ws, GameState* bs, Player turn, GameMode gm) : board(board), whiteState(ws), blackState(bs), turn(turn) 
 	{
 		switch (mode)
 		{
@@ -34,7 +34,7 @@ public:
 	Piece* SelectStartPos(File startX, Rank startY);
 	bool SelectEndPos(Piece* currentPiece, File endX, Rank endY, bool& isPosForm);
 	void ShowBoard() const;
-	void RefreshBoard();
+	bool RefreshBoard();
 	inline Player GetTrun() const {return turn;}
 
 	void SetGameMode(GameMode gm);

@@ -171,7 +171,7 @@ void Game::RemovePiece(Piece* capturedPiece, Player color)
     delete capturedPiece; 
 }
 
-void Game::RefreshBoard()
+bool Game::RefreshBoard()
 {
     Position wKingPos, bKingPos;
     wKingPos.x = bKingPos.x = File::Filesize;
@@ -207,9 +207,17 @@ void Game::RefreshBoard()
 	if(wKingPos.x == 8 && wKingPos.y == 8)
     {
         //게임 결과 출력 (흑 승)
+        system("cls");
+        cout << "축하합니다. 흑의 승리입니다." << endl;
+        system("pause");
+        return false;
     }
     else if(bKingPos.x == 8 && bKingPos.y == 8)
     {
+        system("cls");
+        cout << "축하합니다. 백의 승리입니다." << endl;
+        system("pause");
+        return false;
         //게임 결과 출력 (백 승)
     }
 
@@ -239,8 +247,8 @@ void Game::RefreshBoard()
     {
         cout << "체크입니다" << endl; // 5초간?
     }
+    return true;
 }
-
 void Game::ShowBoard() const
 {
     // 1. 상단 경계선 출력

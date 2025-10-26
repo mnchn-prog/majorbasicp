@@ -80,6 +80,8 @@ int main()
     GameState b(blackPieces, Player::black);
 
     // 3. 게임 시작
+    GameMode gameMode = GameMode::classical;
+    Game game(board, &w, &b, Player::white, gameMode);
     while (true) {
         std::cout << "=========================================\n";
         std::cout << "||                                     ||\n";
@@ -93,8 +95,7 @@ int main()
         std::cout << "=========================================\n";
         std::cout << ">> 선택하세요: ";
         int num; cin >> num;
-        GameMode gameMode = GameMode::classical;
-	    Game game(board, &w, &b, Player::white, gameMode);
+        
         switch(num)
         {
 	        case 1:
@@ -137,14 +138,12 @@ GameMode ChoiceGameMode()
 
 void StartGame(Game game)
 {
-    while (true)
+    bool fin = true;
+    while(fin=game.RefreshBoard())
 	{
-//        system("pause");
 	    system("cls");
-
-        game.RefreshBoard();
+        game.ShowBoard();
         game.UpdateTime(); // 턴 시간 차감
-	    game.ShowBoard();
 
 	    string startPos, endPos;
         Piece* selectedPiece = nullptr;
@@ -204,6 +203,7 @@ void StartGame(Game game)
 	        availableEndPos = game.SelectEndPos(selectedPiece, endX, endY, isPosForm);
             if(!isPosForm) break; // 좌표 형식 자체가 아니면 다시 주 프롬포트
 	    }
+
     }
 }
 int get_visual_width(const string& s) {
@@ -284,6 +284,6 @@ void ShowRule()
     for (int i = 0; i < col2_width; ++i) std::cout << "─";
     std::cout << "┘" << std::endl;
 
-    _getch();
+    system("pause");
     return;
 }
