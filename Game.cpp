@@ -307,3 +307,78 @@ string Game::FormatTime(int sec) const
    sprintf(buf, "%02d:%02d", m, s);
    return string(buf);
 }
+
+int Game::get_visual_width(const string& s) {
+    int width = 0;
+    for (size_t i = 0; i < s.length(); ) {
+        unsigned char c = s[i];
+        if (c < 0x80) { // ASCII 문자 (1바이트)
+            width += 1;
+            i += 1;
+        }
+        else { // 멀티바이트 문자 (한글 등)
+            width += 2;
+            i += 3; // UTF-8 한글은 3바이트
+        }
+    }
+    return width;
+}
+void Game::ShowCommand()
+{
+    std::vector<std::pair<std::string, std::string>> data = {
+     {"[a-h][1-8]", "움직일 기물을 선택한다."},
+     {"gg, GG", "상대에게 항복한다"},
+     {"bb, BB", "무승부를 신청한다"},
+     {"tt, TT", "남은 시간을 갱신한다．"},
+     {"qq, QQ", "좌표를 다시 선택한다."},
+    };
+
+    std::string header1 = "명령어";
+    std::string header2 = "해석";
+
+    // 너비 설정
+    int col1_width = 15;
+    int col2_width = 25;
+
+    // --- 표 그리기 시작 ---
+
+    // 1. 상단 테두리
+    std::cout << "┌";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┬";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┐" << std::endl;
+
+    // 2. 헤더 내용
+    std::cout << "│ " << header1;
+    for (int i = 0; i < col1_width - get_visual_width(header1) - 1; ++i) std::cout << " ";
+    std::cout << "│ " << header2;
+    for (int i = 0; i < col2_width - get_visual_width(header2) - 1; ++i) std::cout << " ";
+    std::cout << "│" << std::endl;
+
+    // 3. 헤더와 내용의 구분선
+    std::cout << "├";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┼";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┤" << std::endl;
+
+    // 4. 데이터 내용 (4줄)
+    for (const auto& row : data) {
+        std::cout << "│ " << row.first;
+        for (int i = 0; i < col1_width - get_visual_width(row.first) - 1; ++i) std::cout << " ";
+        std::cout << "│ " << row.second;
+        for (int i = 0; i < col2_width - get_visual_width(row.second) - 1; ++i) std::cout << " ";
+        std::cout << "│" << std::endl;
+    }
+
+    // 5. 하단 테두리
+    std::cout << "└";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┴";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┘" << std::endl;
+    _getch();
+
+    return;
+}

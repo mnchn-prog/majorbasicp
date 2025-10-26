@@ -2,6 +2,8 @@
 #include <vector> // GameState 초기화를 위해 필요
 #include <algorithm> // GameState 초기화를 위해 필요
 #include <iterator> // GameState 초기화를 위해 필요
+#include <utility>  // ShowRule pair()
+
 
 // ⚠️ Windows API와의 충돌 방지 매크로
 #define NOMINMAX 
@@ -29,6 +31,7 @@ Cell board[Rank::Ranksize][File::Filesize];
 
 GameMode ChoiceGameMode();
 void StartGame(Game game);
+void ShowRule();
 
 int main()
 {
@@ -78,7 +81,17 @@ int main()
 
     // 3. 게임 시작
 
-    cout << "1. 게임 시작 2. 게임 모드 3. 게임 설명 4. 프로그램 종료 \n번호를 입력하세요(1~4): ";
+    std::cout << "=========================================\n";
+    std::cout << "||                                     ||\n";
+    std::cout << "||             CHESS GAME              ||\n";
+    std::cout << "||                                     ||\n";
+    std::cout << "||   1. 게임 시작                      ||\n";
+    std::cout << "||   2. 게임 모드                      ||\n";
+    std::cout << "||   3. 게임 규칙                      ||\n";
+    std::cout << "||   4. 종료                           ||\n";
+    std::cout << "||                                     ||\n";
+    std::cout << "=========================================\n";
+    std::cout << ">> 선택하세요: ";
     int num; cin >> num;
     GameMode gameMode = GameMode::classical;
 	Game game(board, &w, &b, Player::white, gameMode);
@@ -91,6 +104,10 @@ int main()
             gameMode = ChoiceGameMode();
             game.SetGameMode(gameMode);
             break;
+        case 3:
+            ShowRule();
+        case 4:
+            return 0;
     }
 }
 
@@ -177,4 +194,85 @@ void StartGame(Game game)
             if(!isPosForm) break; // 좌표 형식 자체가 아니면 다시 주 프롬포트
 	    }
     }
+}
+int get_visual_width(const string& s) {
+    int width = 0;
+    for (size_t i = 0; i < s.length(); ) {
+        unsigned char c = s[i];
+        if (c < 0x80) { // ASCII 문자 (1바이트)
+            width += 1;
+            i += 1;
+        }
+        else { // 멀티바이트 문자 (한글 등)
+            width += 2;
+            i += 3; // UTF-8 한글은 3바이트
+        }
+    }
+    return width;
+}
+void ShowRule()
+{
+    cout << "[Welcome to Chess World]" << endl;
+    cout << "체스를 모방한 2인용 게임으로 백과 흑이 차례를 번갈아가면서 진행한다. " << endl;
+    cout << "각 차례에 체스판의 좌표를 입력하여 기물을 선택하고 이동할 수 있다. " << endl;
+    cout << "기물마다 이동방법은 상이하며 규칙으로 정의된 움직임만을 허용한다. " << endl;
+    cout << "상대방의 왕을 먼저 잡으면 승리하고 시간을 다 써버리면 패배한다. " << endl;
+    cout << "또한 항복, 합의에 의한 무승부로 게임을 종료할 수 있다." << endl;
+    std::vector<std::pair<std::string, std::string>> data = {
+         {"폰", "기본 한칸 전진, 처음만 두칸 가능"},
+         {"나이트", "L자 형태로 앞으로 2칸 옆으로 1칸"},
+         {"비숍", "대각선 방향으로 원하는 만큼 이동 가능하다."},
+         {"룩", "사방으로 원하는 만큼 이동할 수 있다."},
+         {"퀸", "모든방향으로 원하는 만큼 이동할 수 있다"},
+         {"킹", "모든방향으로 한 칸씩만 움직일 수 있다."}
+    };
+
+    std::string header1 = "기물";
+    std::string header2 = "이동방법";
+
+    // 너비 설정
+    int col1_width = 15;
+    int col2_width = 45;
+
+    // --- 표 그리기 시작 ---
+
+    // 1. 상단 테두리
+    std::cout << "┌";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┬";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┐" << std::endl;
+
+    // 2. 헤더 내용
+    std::cout << "│ " << header1;
+    for (int i = 0; i < col1_width - get_visual_width(header1) - 1; ++i) std::cout << " ";
+    std::cout << "│ " << header2;
+    for (int i = 0; i < col2_width - get_visual_width(header2) - 1; ++i) std::cout << " ";
+    std::cout << "│" << std::endl;
+
+    // 3. 헤더와 내용의 구분선
+    std::cout << "├";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┼";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┤" << std::endl;
+
+    // 4. 데이터 내용 (4줄)
+    for (const auto& row : data) {
+        std::cout << "│ " << row.first;
+        for (int i = 0; i < col1_width - get_visual_width(row.first) - 1; ++i) std::cout << " ";
+        std::cout << "│ " << row.second;
+        for (int i = 0; i < col2_width - get_visual_width(row.second) - 1; ++i) std::cout << " ";
+        std::cout << "│" << std::endl;
+    }
+
+    // 5. 하단 테두리
+    std::cout << "└";
+    for (int i = 0; i < col1_width; ++i) std::cout << "─";
+    std::cout << "┴";
+    for (int i = 0; i < col2_width; ++i) std::cout << "─";
+    std::cout << "┘" << std::endl;
+
+    _getch();
+    return;
 }

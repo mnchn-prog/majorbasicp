@@ -2,6 +2,7 @@
 #include "Cell.h"
 #include "GameState.h"
 #include <chrono>
+#include <conio.h>  //_getch() 키입력시 화면전환 
 
 class Game
 {
@@ -9,9 +10,8 @@ private:
 	GameState* whiteState, * blackState;
 	Player turn;
 	Cell (&board)[Rank::Ranksize][File::Filesize];
-	void RemovePiece(Piece* capturedPiece, Player color);
+	void RemovePiece(Piece* capturedPiece, Player color);	//시간 관련
 
-	//시간 관련
 	GameMode mode;
 	std::chrono::steady_clock::time_point lastMoveTime;
 	int whiteTimeLeft;
@@ -52,4 +52,6 @@ public:
         }
 		return false;
 	}
+	void ShowCommand();	//주프롬프트 커맨드 관련
+	int get_visual_width(const string& s);	//주 프롬프트 커맨드 관련
 };
