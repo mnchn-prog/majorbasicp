@@ -39,8 +39,8 @@ int main()
 #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
 #endif
-    
-	// 1. 기물 초기 배치 및 목록 생성
+
+    // 1. 기물 초기 배치 및 목록 생성
     vector<Piece*> whitePieces;
     vector<Piece*> blackPieces;
 
@@ -53,9 +53,9 @@ int main()
     whitePieces.push_back(new Bishop(static_cast<File>(5), static_cast<Rank>(0), PieceType::typeBishop, Player::white));
     whitePieces.push_back(new Knight(static_cast<File>(6), static_cast<Rank>(0), PieceType::typeKnight, Player::white));
     whitePieces.push_back(new Rook(static_cast<File>(7), static_cast<Rank>(0), PieceType::typeRook, Player::white));
-    
+
     // 폰 (1랭크)
-    for(int i = 0; i < File::Filesize; ++i) {
+    for (int i = 0; i < File::Filesize; ++i) {
         whitePieces.push_back(new Pawn(static_cast<File>(i), static_cast<Rank>(1), PieceType::typePawn, Player::white));
     }
 
@@ -68,9 +68,9 @@ int main()
     blackPieces.push_back(new Bishop(static_cast<File>(5), static_cast<Rank>(7), PieceType::typeBishop, Player::black));
     blackPieces.push_back(new Knight(static_cast<File>(6), static_cast<Rank>(7), PieceType::typeKnight, Player::black));
     blackPieces.push_back(new Rook(static_cast<File>(7), static_cast<Rank>(7), PieceType::typeRook, Player::black));
-    
+
     // 폰 (6랭크)
-    for(int i = 0; i < File::Filesize; ++i) {
+    for (int i = 0; i < File::Filesize; ++i) {
         blackPieces.push_back(new Pawn(static_cast<File>(i), static_cast<Rank>(6), PieceType::typePawn, Player::black));
     }
 
@@ -95,20 +95,20 @@ int main()
         std::cout << "=========================================\n";
         std::cout << ">> 선택하세요: ";
         int num; cin >> num;
-        
-        switch(num)
+
+        switch (num)
         {
-	        case 1:
-                StartGame(game);
-                break;
-            case 2:
-                gameMode = ChoiceGameMode();
-                game.SetGameMode(gameMode);
-                break;
-            case 3:
-                ShowRule();
-            case 4:
-                return 0;
+        case 1:
+            StartGame(game);
+            break;
+        case 2:
+            gameMode = ChoiceGameMode();
+            game.SetGameMode(gameMode);
+            break;
+        case 3:
+            ShowRule();
+        case 4:
+            return 0;
         }
 
     }
@@ -118,20 +118,20 @@ GameMode ChoiceGameMode()
 {
     cout << "1. 클래식(30분) 2. 래피드(10분) 3. 블리츠(3분) \n번호를 입력하세요: ";
     int n; cin >> n;
-    switch(n)
+    switch (n)
     {
-        case 1: 
-            cout << "클래시컬 모드" << endl;
-            system("pause");
-            return GameMode::classical;
-        case 2: 
-            cout << "래피드 모드" << endl;
-            system("pause");
-            return GameMode::rapid;
-        case 3: 
-            cout << "블리츠 모드" << endl;
-            system("pause");
-            return GameMode::blitz;
+    case 1:
+        cout << "클래시컬 모드" << endl;
+        system("pause");
+        return GameMode::classical;
+    case 2:
+        cout << "래피드 모드" << endl;
+        system("pause");
+        return GameMode::rapid;
+    case 3:
+        cout << "블리츠 모드" << endl;
+        system("pause");
+        return GameMode::blitz;
         return GameMode::classical;
     }
 }
@@ -139,19 +139,19 @@ GameMode ChoiceGameMode()
 void StartGame(Game game)
 {
     bool fin = true;
-    while(fin=game.RefreshBoard())
-	{
-	    system("cls");
+    while (fin = game.RefreshBoard())
+    {
+        system("cls");
         game.ShowBoard();
         game.UpdateTime(); // 턴 시간 차감
 
-	    string startPos, endPos;
+        string startPos, endPos;
         Piece* selectedPiece = nullptr;
-        while(selectedPiece == nullptr)
-        {   
-	        cout << (game.GetTrun() == 0 ? "white" : "black") << " | 움직일 기물 위치 입력: ";
-	        cin >> startPos;
-            
+        while (selectedPiece == nullptr)
+        {
+            cout << (game.GetTrun() == 0 ? "white" : "black") << " | 움직일 기물 위치 입력: ";
+            cin >> startPos;
+
             // ⬇️ tt 또는 TT 입력 시 현재 시간 출력
             if (startPos == "tt" || startPos == "TT")
             {
@@ -160,13 +160,13 @@ void StartGame(Game game)
                 system("pause");
                 continue;
             }
-            
-            else if(startPos.length() != 2)
+
+            else if (startPos.length() != 2)
             {
                 // 문법 오류 결과 표시
-                game.UpdateTime();            
+                game.UpdateTime();
                 bool isEnd = game.checkTimeZero();
-                if(isEnd) return;
+                if (isEnd) return;
                 continue;
             }
 
@@ -174,35 +174,35 @@ void StartGame(Game game)
             Rank startY = static_cast<Rank>(startPos[1] - '1');
             selectedPiece = game.SelectStartPos(startX, startY);
 
-            if(selectedPiece == nullptr) // 입력이 잘못됐을 때 처리
+            if (selectedPiece == nullptr) // 입력이 잘못됐을 때 처리
             {
-                game.UpdateTime();            
+                game.UpdateTime();
                 bool isEnd = game.checkTimeZero();
-                if(isEnd) return;
+                if (isEnd) return;
             }
         }
 
         bool availableEndPos = false;
-        while(availableEndPos == false)
+        while (availableEndPos == false)
         {
-	        cout << (game.GetTrun() == 0 ? "white" : "black") << " | 도착할 위치 입력: ";
-	        cin >> endPos;
-            if(endPos == "qq" || endPos == "QQ") // 되돌리기일 경우 다시 주 프롬포트
+            cout << (game.GetTrun() == 0 ? "white" : "black") << " | 도착할 위치 입력: ";
+            cin >> endPos;
+            if (endPos == "qq" || endPos == "QQ") // 되돌리기일 경우 다시 주 프롬포트
             {
                 break;
             }
 
             File endX = static_cast<File>(endPos[0] - 'a');
             Rank endY = static_cast<Rank>(endPos[1] - '1');
-            if(endPos.length() != 2)
+            if (endPos.length() != 2)
             {
                 // 문법 오류결과 표시
                 break; // 좌표형식이 아닐 경우에 다시 주 프롬포트
             }
             bool isPosForm = false;
-	        availableEndPos = game.SelectEndPos(selectedPiece, endX, endY, isPosForm);
-            if(!isPosForm) break; // 좌표 형식 자체가 아니면 다시 주 프롬포트
-	    }
+            availableEndPos = game.SelectEndPos(selectedPiece, endX, endY, isPosForm);
+            if (!isPosForm) break; // 좌표 형식 자체가 아니면 다시 주 프롬포트
+        }
 
     }
 }
