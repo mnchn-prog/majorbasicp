@@ -1,6 +1,6 @@
 #include "Game.h"
 #include <algorithm>
-
+#include <thread>
 using namespace std;
 
 string Game::unicodeForPiece(Player color, PieceType p) const{
@@ -171,7 +171,7 @@ void Game::RemovePiece(Piece* capturedPiece, Player color)
     delete capturedPiece; 
 }
 
-void Game::RefreshBoard()
+void Game::RefreshBoard(bool& whiteChecked, bool& blackChecked)
 {
     Position wKingPos, bKingPos;
     wKingPos.x = bKingPos.x = File::Filesize;
@@ -204,13 +204,16 @@ void Game::RefreshBoard()
 			}
 		}
 	}
+
 	if(wKingPos.x == 8 && wKingPos.y == 8)
     {
-        //게임 결과 출력 (흑 승)
+        cout << "게임 결과 출력 (흑 승)" << endl;
+        return;
     }
     else if(bKingPos.x == 8 && bKingPos.y == 8)
     {
-        //게임 결과 출력 (백 승)
+        cout << "게임 결과 출력 (백 승)" << endl;
+        return;
     }
 
     vector<Piece*> whitePieces = whiteState->GetPieces();
@@ -231,17 +234,18 @@ void Game::RefreshBoard()
             board[pos.second][pos.first].AttackedByBlack = true;
         }
     }
-    if(board[wKingPos.x][wKingPos.y].AttackedByBlack)
+    
+    if(board[wKingPos.y][wKingPos.x].AttackedByBlack)
     {
-        cout << "체크입니다" << endl; // 5초간..? 스레드 슬립?
+        whiteChecked = true;
     }
-    if(board[bKingPos.x][bKingPos.y].AttckedByWhite)
+    if(board[bKingPos.y][bKingPos.x].AttckedByWhite)
     {
-        cout << "체크입니다" << endl; // 5초간?
+        blackChecked = true;
     }
 }
 
-void Game::ShowBoard() const
+void Game::ShowBoard(bool whiteChecked, bool blackChecked) const
 {
     // 1. 상단 경계선 출력
     cout << "black | " << FormatTime(blackTimeLeft) << endl;
@@ -288,6 +292,17 @@ void Game::ShowBoard() const
     }
     cout << endl;
     cout << "white | " << FormatTime(whiteTimeLeft) << endl;
+
+    if(whiteChecked)
+    {
+        cout << "백 킹이 체크 상태입니다" << endl;
+        this_thread::sleep_for(std::chrono::seconds(5));
+    }
+    if(blackChecked)
+    {
+        cout << "흑 킹이 체크 상태입니다" << endl; // 5초간?
+        this_thread::sleep_for(std::chrono::seconds(5));
+    }
 }
 
 void Game::UpdateTime()

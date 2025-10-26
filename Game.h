@@ -33,8 +33,8 @@ public:
     //void MovePiece(string startPos, string endPos); // 기획서랑 똑같게 하려면 고쳐야됨
 	Piece* SelectStartPos(File startX, Rank startY);
 	bool SelectEndPos(Piece* currentPiece, File endX, Rank endY, bool& isPosForm);
-	void ShowBoard() const;
-	void RefreshBoard();
+	void ShowBoard(bool whiteChecked, bool blackChecked) const;
+	void RefreshBoard(bool& whiteChecked, bool& blackChecked);
 	inline Player GetTrun() const {return turn;}
 
 	void SetGameMode(GameMode gm) {mode = gm;}

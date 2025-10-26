@@ -7,7 +7,6 @@ bool Piece::MovePos(File x, Rank y, Cell(&board)[Rank::Ranksize][File::Filesize]
 	if(board[y][x].currentPiece != PieceType::typeNone)
 	{
 		capturedPiece = board[y][x].pPiece;
-		cout << capturedPiece;
 	}
 	pos.x = x;
 	pos.y = y;

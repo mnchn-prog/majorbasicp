@@ -113,10 +113,10 @@ void StartGame(Game game)
 	{
         system("pause");
 	    system("cls");
-
-        game.RefreshBoard();
+        bool whiteChecked = false, blackChecked = false;
+        game.RefreshBoard(whiteChecked, blackChecked);
         game.UpdateTime(); // 턴 시간 차감
-	    game.ShowBoard();
+	    game.ShowBoard(whiteChecked, blackChecked);
 
 	    string startPos, endPos;
         Piece* selectedPiece = nullptr;
