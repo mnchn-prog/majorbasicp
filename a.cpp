@@ -24,7 +24,7 @@
 #include "Game.h"
 
 using namespace std;
-// g++ -o chess_game a.cpp Game.cpp GameState.cpp Piece.cpp Knight.cpp Bishop.cpp Pawn.cpp Rook.cpp Queen.cpp King.cpp -finput-charset=UTF-8 -fexec-charset=UTF-8 -std=c++11
+// g++ -o ChessGame a.cpp Game.cpp GameState.cpp Piece.cpp Knight.cpp Bishop.cpp Pawn.cpp Rook.cpp Queen.cpp King.cpp -finput-charset=UTF-8 -fexec-charset=UTF-8 -std=c++11
 Cell board[Rank::Ranksize][File::Filesize];
 
 GameMode ChoiceGameMode();
@@ -329,6 +329,8 @@ void StartGame(Game &game)
             endPos = trim(endPos);
             if (endPos == "qq" || endPos == "QQ") // 되돌리기일 경우 다시 주 프롬포트
             {
+                printCheck = false;
+                printMove = false;
                 break;
             }
 
