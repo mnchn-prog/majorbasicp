@@ -103,10 +103,6 @@ int main()
             case 2:
                 gameMode = ChoiceGameMode();
                 game.SetGameMode(gameMode);
-<<<<<<< HEAD
-                cout << game.GetWhiteTime() << endl;
-=======
->>>>>>> main
                 break;
             case 3:
                 ShowRule();
