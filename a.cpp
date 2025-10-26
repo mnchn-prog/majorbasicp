@@ -110,6 +110,9 @@ GameMode ChoiceGameMode()
 
 void StartGame(Game& game)
 {
+    bool drawOffered = false;
+    Player drawOfferBy = Player::playerNone;
+
     while (true)
 	{
         system("pause");
@@ -133,6 +136,42 @@ void StartGame(Game& game)
                 system("pause");
                 continue;
             }
+           // ⬇️ GG 또는 gg 입력 시 항복 처리
+            if (startPos == "gg" || startPos == "GG")
+            {
+                cout << "🏳️ " << (game.GetTrun() == 0 ? "White" : "Black") << " 항복!" << endl;
+                cout << "메인메뉴로 돌아가려면 Enter키를 누르세요..." << endl;
+                system("pause");
+                return;
+            }
+            // ⬇️ BB 또는 bb 입력 시 무승부 처리
+            if (startPos == "bb" || startPos == "BB")
+            {
+                Player currentPlayer = game.GetTrun() == 0 ? Player::white : Player::black;
+
+                if (!drawOffered)
+                {
+                    drawOffered = true;
+                    drawOfferBy = currentPlayer;
+                    cout << "🤝 무승부를 제안했습니다. 상대방이 수락하면 BB 또는 bb 입력하세요.\n";
+                    system("pause");
+                    continue;
+                }
+                else if (drawOfferBy != currentPlayer)
+                {
+                    cout << "🤝 무승부가 성립되었습니다!\n";
+                    cout << "메인메뉴로 돌아가려면 Enter키를 누르세요..." << endl;
+                    system("pause");
+                    return;
+                }
+                else
+                {
+                    cout << "⚠️ 이미 무승부를 제안했습니다.\n";
+                    system("pause");
+                    continue;
+                }
+            }
+
             selectedPiece = game.SelectStartPos(startPos);
 
             if(selectedPiece == nullptr) // 입력이 잘못됐을 때 처리
