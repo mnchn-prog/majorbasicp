@@ -71,6 +71,7 @@ bool Game::SelectEndPos(Piece* currentPiece, File endX, Rank endY, bool& isPosFo
         // 턴 전환
         turn = (turn == Player::white ? Player::black : Player::white);
         cout << "기물이 이동되었습니다." << endl;
+        isPosForm = true;
         // 체크입니다 5초간 출력, 킹이 잡혔다면 게임결과 출력
         return true;
     } 
@@ -309,7 +310,7 @@ void Game::UpdateTime()
 {
    auto now = std::chrono::steady_clock::now();
    int elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - lastMoveTime).count();
-   if(turn == Player::black) whiteTimeLeft -= elapsed;
+   if(turn == Player::white) whiteTimeLeft -= elapsed;
    else blackTimeLeft -= elapsed;
    lastMoveTime = now;
 }

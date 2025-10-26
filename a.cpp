@@ -28,7 +28,7 @@ using namespace std;
 Cell board[Rank::Ranksize][File::Filesize];
 
 GameMode ChoiceGameMode();
-void StartGame(Game game);
+void StartGame(Game& game);
 
 int main()
 {
@@ -107,7 +107,8 @@ GameMode ChoiceGameMode()
     }
 }
 
-void StartGame(Game game)
+
+void StartGame(Game& game)
 {
     while (true)
 	{
@@ -115,7 +116,6 @@ void StartGame(Game game)
 	    system("cls");
         bool whiteChecked = false, blackChecked = false;
         game.RefreshBoard(whiteChecked, blackChecked);
-        game.UpdateTime(); // 턴 시간 차감
 	    game.ShowBoard(whiteChecked, blackChecked);
 
 	    string startPos, endPos;
@@ -137,9 +137,11 @@ void StartGame(Game game)
             else if(startPos.length() != 2)
             {
                 // 문법 오류 결과 표시
-                game.UpdateTime();            
-                bool isEnd = game.checkTimeZero();
-                if(isEnd) return;
+                game.UpdateTime();
+                if(game.checkTimeZero()) return;
+                system("pause");
+                system("cls");
+                game.ShowBoard(whiteChecked, blackChecked);
                 continue;
             }
 
@@ -149,10 +151,12 @@ void StartGame(Game game)
 
             if(selectedPiece == nullptr) // 입력이 잘못됐을 때 처리
             {
-                game.UpdateTime();            
-                bool isEnd = game.checkTimeZero();
-                if(isEnd) return;
-            }
+                if(game.checkTimeZero()) return;
+                system("pause");
+                system("cls");
+                game.UpdateTime();
+                game.ShowBoard(whiteChecked, blackChecked);
+            }            
         }
 
         bool availableEndPos = false;
@@ -170,11 +174,20 @@ void StartGame(Game game)
             if(endPos.length() != 2)
             {
                 // 문법 오류결과 표시
+                game.UpdateTime();
+                if(game.checkTimeZero()) return;
                 break; // 좌표형식이 아닐 경우에 다시 주 프롬포트
             }
             bool isPosForm = false;
+            game.UpdateTime();
 	        availableEndPos = game.SelectEndPos(selectedPiece, endX, endY, isPosForm);
-            if(!isPosForm) break; // 좌표 형식 자체가 아니면 다시 주 프롬포트
+            if(!isPosForm) 
+            {
+                game.UpdateTime();
+                if(game.checkTimeZero()) return;
+                break; // 좌표 형식 자체가 아니면 다시 주 프롬포트
+            }
 	    }
+        if(game.checkTimeZero()) return;
     }
 }

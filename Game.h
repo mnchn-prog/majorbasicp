@@ -38,16 +38,17 @@ public:
 	inline Player GetTrun() const {return turn;}
 
 	void SetGameMode(GameMode gm) 
-	{
-		mode = gm;
+	{ 
+		mode = gm; 
 		switch(mode)
 		{
 			case GameMode::classical: whiteTimeLeft = blackTimeLeft = 30*60; break;
         	case GameMode::rapid: whiteTimeLeft = blackTimeLeft = 10*60; break;
         	case GameMode::blitz: whiteTimeLeft = blackTimeLeft = 3*60; break;
 		}
-		lastMoveTime = std::chrono::steady_clock::now();
 	}
+
+	void StartTimer() { lastMoveTime = std::chrono::steady_clock::now(); }
 	
 	void UpdateTime();
 	string FormatTime(int sec) const;
