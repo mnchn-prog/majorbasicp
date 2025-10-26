@@ -290,6 +290,15 @@ void Game::ShowBoard() const
     cout << "white | " << FormatTime(whiteTimeLeft) << endl;
 }
 
+void Game::SetGameMode(GameMode gm) {
+    mode = gm;
+    switch (mode)
+    {
+    case GameMode::classical: whiteTimeLeft = blackTimeLeft = 30 * 60; break;
+    case GameMode::rapid: whiteTimeLeft = blackTimeLeft = 10 * 60; break;
+    case GameMode::blitz: whiteTimeLeft = blackTimeLeft = 3 * 60; break;
+    }
+}
 void Game::UpdateTime()
 {
    auto now = std::chrono::steady_clock::now();

@@ -103,6 +103,7 @@ int main()
             case 2:
                 gameMode = ChoiceGameMode();
                 game.SetGameMode(gameMode);
+                cout << game.GetWhiteTime() << endl;
                 break;
             case 3:
                 ShowRule();
@@ -119,9 +120,18 @@ GameMode ChoiceGameMode()
     int n; cin >> n;
     switch(n)
     {
-        case 1: return GameMode::classical;
-        case 2: return GameMode::rapid;
-        case 3: return GameMode::blitz;
+        case 1: 
+            cout << "클래시컬 모드" << endl;
+            system("pause");
+            return GameMode::classical;
+        case 2: 
+            cout << "래피드 모드" << endl;
+            system("pause");
+            return GameMode::rapid;
+        case 3: 
+            cout << "블리츠 모드" << endl;
+            system("pause");
+            return GameMode::blitz;
         return GameMode::classical;
     }
 }

@@ -20,11 +20,11 @@ private:
 public:
 	Game(Cell (&board)[8][8], GameState* ws, GameState* bs, Player turn, GameMode gm = GameMode::classical) : board(board), whiteState(ws), blackState(bs), turn(turn) 
 	{
-		switch(mode)
+		switch (mode)
 		{
-			case GameMode::classical: whiteTimeLeft = blackTimeLeft = 30*60; break;
-        	case GameMode::rapid: whiteTimeLeft = blackTimeLeft = 10*60; break;
-        	case GameMode::blitz: whiteTimeLeft = blackTimeLeft = 3*60; break;
+		case GameMode::classical: whiteTimeLeft = blackTimeLeft = 30*60; break;
+		case GameMode::rapid: whiteTimeLeft = blackTimeLeft = 10*60; break;
+		case GameMode::blitz: whiteTimeLeft = blackTimeLeft = 3*60; break;
 		}
 		lastMoveTime = std::chrono::steady_clock::now();
 	}
@@ -37,7 +37,7 @@ public:
 	void RefreshBoard();
 	inline Player GetTrun() const {return turn;}
 
-	void SetGameMode(GameMode gm) {mode = gm;}
+	void SetGameMode(GameMode gm);
 	void UpdateTime();
 	string FormatTime(int sec) const;
 	int GetWhiteTime() const {return whiteTimeLeft;}
