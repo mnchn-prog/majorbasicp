@@ -41,16 +41,8 @@ int Game::get_visual_width(const string& s) {
     return width;
 }
 
-void Game::ShowCommand()
+void Game::ShowCommand(vector<pair<string,string>> data)
 {
-    std::vector<std::pair<std::string, std::string>> data = {
-     {"[a-h][1-8]", "움직일 기물을 선택한다."},
-     {"gg, GG", "상대에게 항복한다"},
-     {"bb, BB", "무승부를 신청한다"},
-     {"tt, TT", "남은 시간을 갱신한다．"},
-     {"qq, QQ", "좌표를 다시 선택한다."},
-    };
-
     std::string header1 = "명령어";
     std::string header2 = "해석";
 
@@ -100,6 +92,24 @@ void Game::ShowCommand()
     return;
 }
 
+void Game::ShowCommandStart()
+{
+    std::vector<std::pair<std::string, std::string>> data = {
+     {"[a-h][1-8]", "움직일 기물을 선택한다."},
+     {"gg, GG", "상대에게 항복한다"},
+     {"bb, BB", "무승부를 신청한다"},
+     {"tt, TT", "남은 시간을 갱신한다．"}
+    };
+    ShowCommand(data);
+}
+void Game::ShowCommandEnd()
+{
+    std::vector<std::pair<std::string, std::string>> data = {   
+     {"[a-h][1-8]", "움직일 기물을 선택한다."},
+     {"qq, QQ", "좌표를 다시 선택한다."}
+    };
+    ShowCommand(data);
+}
 Piece* Game::SelectStartPos(string startPos) {
 
     // 입력 유효성 검사
@@ -107,12 +117,12 @@ Piece* Game::SelectStartPos(string startPos) {
     Rank startY = static_cast<Rank>(startPos[1] - '1');
     if(startPos.length() != 2)
     {
-        ShowCommand();
+        ShowCommandStart();
         return nullptr;
     }
 
     if (startX < 0 || startX >= File::Filesize || startY < 0 || startY >= Rank::Ranksize) {
-        ShowCommand();
+        ShowCommandStart();
         return nullptr;
     }
 
@@ -130,9 +140,6 @@ Piece* Game::SelectStartPos(string startPos) {
 
 }
 
-// --------------------------------------
-// ② 도착 위치 입력 및 이동 처리
-// --------------------------------------
 bool Game::SelectEndPos(Piece* currentPiece, string endPos, bool& isPosForm) {
     // 입력 유효성 검사
     File endX = static_cast<File>(endPos[0] - 'a');
@@ -140,12 +147,12 @@ bool Game::SelectEndPos(Piece* currentPiece, string endPos, bool& isPosForm) {
     
     if(endPos.length() != 2)
     {
-        ShowCommand();
+        ShowCommandEnd();
         return false; // 좌표형식이 아닐 경우에 다시 주 프롬포트 (isPosForm = false)
     }
 
     if (endX < 0 || endX >= File::Filesize || endY < 0 || endY >= Rank::Ranksize) {
-        ShowCommand();
+        ShowCommandEnd();
         return false;
     }
     Piece* capturedPiece = nullptr;
@@ -263,7 +270,7 @@ void Game::RemovePiece(Piece* capturedPiece, Player color)
     delete capturedPiece; 
 }
 
-void Game::RefreshBoard(bool& whiteChecked, bool& blackChecked)
+bool Game::RefreshBoard(bool& whiteChecked, bool& blackChecked)
 {
     Position wKingPos, bKingPos;
     wKingPos.x = bKingPos.x = File::Filesize;
@@ -300,12 +307,12 @@ void Game::RefreshBoard(bool& whiteChecked, bool& blackChecked)
 	if(wKingPos.x == 8 && wKingPos.y == 8)
     {
         cout << "게임 결과 출력 (흑 승)" << endl;
-        return;
+        return true;
     }
     else if(bKingPos.x == 8 && bKingPos.y == 8)
     {
         cout << "게임 결과 출력 (백 승)" << endl;
-        return;
+        return true;
     }
 
     vector<Piece*> whitePieces = whiteState->GetPieces();
@@ -335,9 +342,10 @@ void Game::RefreshBoard(bool& whiteChecked, bool& blackChecked)
     {
         blackChecked = true;
     }
+    return false;
 }
 
-void Game::ShowBoard(bool whiteChecked, bool blackChecked) const
+void Game::ShowBoard(bool whiteChecked, bool blackChecked, bool printCheck) const
 {
     // 1. 상단 경계선 출력
     cout << "black | " << FormatTime(blackTimeLeft) << endl;
@@ -385,15 +393,18 @@ void Game::ShowBoard(bool whiteChecked, bool blackChecked) const
     cout << endl;
     cout << "white | " << FormatTime(whiteTimeLeft) << endl;
 
-    if(whiteChecked)
+    if(printCheck)
     {
-        cout << "백 킹이 체크 상태입니다" << endl;
-        this_thread::sleep_for(std::chrono::seconds(5));
-    }
-    if(blackChecked)
-    {
-        cout << "흑 킹이 체크 상태입니다" << endl; // 5초간?
-        this_thread::sleep_for(std::chrono::seconds(5));
+        if(whiteChecked)
+        {
+            cout << "백 킹이 체크 상태입니다" << endl;
+            this_thread::sleep_for(std::chrono::seconds(5));
+        }
+        if(blackChecked)
+        {
+            cout << "흑 킹이 체크 상태입니다" << endl; // 5초간?
+            this_thread::sleep_for(std::chrono::seconds(5));
+        }
     }
 }
 
